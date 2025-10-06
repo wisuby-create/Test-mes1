@@ -1,299 +1,200 @@
-<!doctype html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>VN Phone — Maja → Riven, kwiaty, okrągłe ikony</title>
-<style>
-  :root{
-    --bg1:#ffeef7; --bg2:#d8efff; --ink:#111827; --muted:#6b7280;
-    --glass:rgba(255,255,255,.65); --shadow:0 10px 30px rgba(0,0,0,.25);
-    --blue:#60a5fa; --vio:#8b5cf6; --green:#34d399; --pink:#f472b6;
-  }
-  *{box-sizing:border-box} html,body,#root{height:100%;margin:0}
-  body{background:#0f172a;overflow:hidden;font-family:Inter,ui-sans-serif,-apple-system,Segoe UI,Roboto;color:var(--ink)}
-  .stage{height:100%;display:flex;align-items:center;justify-content:center}
-  /* telefon */
-  .phone{
-    width:min(360px,calc(100vw - 16px));
-    height:min(780px,calc(100vh - 16px));
-    border-radius:28px;background:#000;border:4px solid #0b0f1a;
-    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column
-  }
-  .status{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#0b1220;color:#fff}
-  .status-time{font-weight:600}.status-date{color:#9ca3af;font-size:12px}.status-icons{color:#9ca3af;font-size:12px}
+/* ========= CHAPTER 1 SCRIPTS (MESSENGER-VN) ========= */
 
-  /* pastelowa kwiatowa tapeta */
-  .screen{position:relative;flex:1;overflow:hidden;background:linear-gradient(135deg,var(--bg1),var(--bg2))}
-  .screen::before{
-    content:"";position:absolute;inset:0;opacity:.22;
-    background-image:url('data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" width="700" height="700">\
-<defs>\
-<radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#ffffff00"/></radialGradient>\
-</defs>\
-<g>\
-<g opacity="0.95">\
-<circle cx="120" cy="120" r="54" fill="%23f8b4d9"/><circle cx="120" cy="120" r="28" fill="url(%23glow)"/>\
-<circle cx="560" cy="140" r="46" fill="%23c4b5fd"/><circle cx="560" cy="140" r="24" fill="url(%23glow)"/>\
-<circle cx="210" cy="320" r="42" fill="%23a7f3d0"/><circle cx="210" cy="320" r="22" fill="url(%23glow)"/>\
-<circle cx="430" cy="380" r="58" fill="%23fde68a"/><circle cx="430" cy="380" r="30" fill="url(%23glow)"/>\
-<circle cx="300" cy="560" r="44" fill="%23fbcfe8"/><circle cx="300" cy="560" r="22" fill="url(%23glow)"/>\
-</g></g></svg>');
-    background-size:280px 280px;background-repeat:repeat
-  }
-
-  /* HOME: okrągłe bąbelki */
-  .home{position:relative;z-index:1;padding:18px;height:100%;display:flex;flex-direction:column}
-  .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start;justify-items:center}
-  .app{position:relative;display:flex;flex-direction:column;align-items:center}
-  .app-icon{width:68px;height:68px;border-radius:999px;background:var(--glass);backdrop-filter:blur(6px);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12);font-size:26px}
-  .app-name{margin-top:6px;font-size:12px;font-weight:600;color:#1f2937}
-  .badge{position:absolute;right:-6px;top:-6px;background:#ef4444;color:#fff;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;font-size:11px;padding:0 6px;border:2px solid #fff}
-  .home-hint{text-align:center;font-size:12px;color:#374151}
-
-  /* LISTA KONTAKTÓW */
-  .messages{height:100%;display:flex;flex-direction:column;position:relative;z-index:1}
-  .topbar{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.65);backdrop-filter:blur(6px)}
-  .btn{background:transparent;border:0;font-size:14px;color:#1f2937;cursor:pointer}
-  .list{padding:10px;display:flex;flex-direction:column;gap:10px;height:100%;overflow:auto}
-  .contact{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.82);border-radius:14px;padding:10px 12px;text-align:left;position:relative}
-  .name{font-weight:700}.last{font-size:12px;color:var(--muted)} .badge-row{position:absolute;right:8px;top:8px}
-
-  /* avatar z inicjałem */
-  .initial{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800}
-  .i-maja{background:var(--pink)} .i-riven{background:var(--blue)} .i-noah{background:var(--green)} .i-victor{background:var(--vio)}
-  .initial-sm{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
-
-  /* CZAT */
-  .chat{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-  .rowmsg{display:flex;gap:8px;align-items:flex-start}
-  .bubble{max-width:76%;padding:9px 11px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
-  .from-me{margin-left:auto;background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border-top-right-radius:6px}
-  .from-them{background:#fff;color:var(--ink);border-top-left-radius:6px;border:1px solid rgba(0,0,0,.06)}
-  .sender{font-size:11px;font-weight:700;margin-bottom:4px;opacity:.85}
-  .nextbar{padding:10px 12px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06);display:flex;justify-content:flex-end}
-  .choices{padding:10px 12px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06);display:grid;gap:8px}
-  .choice{padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#fff,#f5f8ff);border:1px solid rgba(0,0,0,.06);text-align:left;cursor:pointer}
-</style>
-</head>
-<body>
-<div id="root"></div>
-
-<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-<script type="text/babel">
-const { useEffect, useState } = React;
-
-/* ===== SCENARIUSZE ===== */
 const Scripts = {
+  /* --- MAYA: Scene 1 + Scene 3 + 4 + 5 + 6 intro --- */
   maja: {
-    start: { from:'Maja', text:'Hej! Zgadnij, kto do mnie dziś napisał 👀' },
+    start: { from: 'Maja', text: 'Hey! Guess who texted me today 👀' },
     choices: [
-      {id:'m1', text:'No dawaj, mów!'},
-      {id:'m2', text:'Proszę, nie mów że Riven…'},
-      {id:'m3', text:'Nie mam siły na dramy.'},
+      { id: 'm1', text: "Don't keep me in suspense!" },
+      { id: 'm2', text: "Please don't say Riven…" },
+      { id: 'm3', text: "Not in the mood, Maya." },
     ],
-    replies:{
-      m1:[{from:'Maja',text:'Riven. Po miesiącu ciszy.'},{from:'Maja',text:'Czy on chce gadać z tobą przez mnie?'}],
-      m2:[{from:'Maja',text:'…niestety tak 😅'}],
-      m3:[{from:'Maja',text:'Udajesz, że nie ciekawi 😉'}],
-    }
+    replies: {
+      m1: [
+        { from: 'Maja', text: 'Riven. He texted ME instead of you.' },
+        { from: 'Maja', text: "What is he even doing? 😤" },
+      ],
+      m2: [
+        { from: 'Maja', text: '…yeah. Sorry 😅' },
+        { from: 'Maja', text: 'He asked if you were still mad.' },
+      ],
+      m3: [
+        { from: 'Maja', text: 'Uh-huh. And yet you’re reading this 👀' },
+        { from: 'Maja', text: 'You always want to know, [MC].' },
+      ],
+    },
+    /* Po każdej opcji Maja odblokowuje Rivena */
+    effects: {
+      m1: [{ unlock: 'riven', notify: true, flag: 'S1_done' }],
+      m2: [{ unlock: 'riven', notify: true, flag: 'S1_done' }],
+      m3: [{ unlock: 'riven', notify: true, flag: 'S1_done' }],
+    },
   },
-  riven:{
-    start:{from:'Riven',text:'You still awake?'},
-    choices:[
-      {id:'r1',text:'Nie sądziłam, że napiszesz.'},
-      {id:'r2',text:'Nie śpię.'},
-      {id:'r3',text:'…(cisza)'},
+
+  /* --- RIVEN: Scene 2 --- */
+  riven: {
+    start: { from: 'Riven', text: 'You still awake?' },
+    choices: [
+      { id: 'r1', text: "Didn't expect to hear from you." },
+      { id: 'r2', text: "I don't sleep much lately." },
+      { id: 'r3', text: "(Don’t reply)" },
     ],
-    replies:{
-      r1:[{from:'Riven',text:'A jednak napisałem.'}],
-      r2:[{from:'Riven',text:'Zawsze zarywałaś noce.'}],
-      r3:[{from:'Riven',text:'Zasłużyłem. Wiem.'}],
-    }
+    replies: {
+      r1: [
+        { from: 'Riven', text: "Me neither. Guess we're both bad at letting go." },
+        { from: 'Riven', text: 'Maya said you’re still in town.' },
+        { from: 'Riven', text: 'Do you ever think about… that night?' },
+      ],
+      r2: [
+        { from: 'Riven', text: 'Figures. You used to text me at 2AM just to send memes.' },
+        { from: 'Riven', text: 'Maya said you’re still in town.' },
+        { from: 'Riven', text: 'Do you ever think about… that night?' },
+      ],
+      r3: [
+        { from: 'Riven', text: '…yeah. I probably deserve the silence.' },
+        { from: 'Riven', text: 'Maya said you’re still in town.' },
+        { from: 'Riven', text: 'Do you ever think about… that night?' },
+      ],
+    },
+    /* drugi wybór w tej scenie — dopiszemy go w silniku jako choices2 */
+    followupChoices: [
+      { id: 'rfx1', text: 'I try not to.' },
+      { id: 'rfx2', text: 'Every day.' },
+      { id: 'rfx3', text: 'Delete my number, Riven.' },
+    ],
+    followupReplies: {
+      rfx1: [{ from: 'Riven', text: "I get that. Still, I can't stop." }],
+      rfx2: [{ from: 'Riven', text: 'Same. It messes with my head.' }],
+      rfx3: [{ from: 'Riven', text: 'Got it. (…Still sorry.)' }],
+    },
+    effects: {
+      // dyskretne punkty relacji (możesz zapisać w stanie)
+      r1: [{ rel: { riven: +1 } }],
+      r2: [{ rel: { riven: +1 } }],
+      r3: [{ rel: { riven: -1 } }],
+      rfx1: [{ rel: { riven: +1 }, flag: 'riven_calm' }],
+      rfx2: [{ rel: { riven: +1 } }],
+      rfx3: [{ rel: { riven: -1 } }],
+    },
   },
-  // (Noah, Victor na później — nie odblokowujemy ich jeszcze)
+
+  /* --- MAYA: Scene 3, 4, 5 (w jednym bloku „post-chat”) --- */
+  maja_post: {
+    start: { from: 'Maja', text: 'Sooo… he reached out? You okay?' },
+    choices: [
+      { id: 'mp1', text: "I'm fine. We'll see." },
+      { id: 'mp2', text: "He shouldn’t have texted you first." },
+      { id: 'mp3', text: "I'm done with him." },
+    ],
+    replies: {
+      mp1: [{ from: 'Maja', text: "That's brave. Closure is healthy. 💪" }],
+      mp2: [{ from: 'Maja', text: 'He panics when he can’t control things. Typical.' }],
+      mp3: [{ from: 'Maja', text: "Proud of you. He doesn’t deserve another chance." }],
+    },
+    /* foreshadow: „unknown ping” i „library guy” — bez unlocków */
+    after: [
+      { from: 'Unknown', text: 'Tomorrow. Café?' },
+      { from: 'Maja', text: "Wait—who's that from? You didn't give your number again, right? 😅" },
+      { from: 'Maja', text: 'Also… the scanner guy from the library asked about you. Super polite.' },
+    ],
+    effects: {
+      mp1: [{ flag: 'soft' }],
+      mp2: [{ flag: 'defensive' }],
+      mp3: [{ flag: 'cold' }],
+    },
+  },
+
+  /* --- NOAH: Scene 6 (odblokuje się tylko po miękkim/neutralnym tonie) --- */
+  noah: {
+    start: { from: 'Maja', text: 'Heading to that café? Guess who works there! ☕️ Noah!' },
+    bridge: { from: 'Noah', text: "Hey! Maya gave me your number—hope that's okay 😅" },
+    choices: [
+      { id: 'n1', text: 'All good! Nice to hear from you.' },
+      { id: 'n2', text: 'Maya loves playing matchmaker.' },
+      { id: 'n3', text: "Don't give my number next time, Maya." },
+    ],
+    replies: {
+      n1: [{ from: 'Noah', text: "Awesome! I'll save your usual order ☕️" }],
+      n2: [{ from: 'Noah', text: "Haha, guilty. But I'm not complaining." }],
+      n3: [{ from: 'Maja', text: 'Oops 😇' }],
+    },
+    effects: {
+      n1: [{ rel: { noah: +1 } }],
+      n2: [{ rel: { noah: +1 } }],
+      n3: [{ rel: { noah: -1 } }],
+    },
+  },
+
+  /* --- VICTOR: Scene 7 (wymaga flagi „riven_calm” albo neutralu) --- */
+  victor: {
+    start: { from: 'Victor', text: 'Good evening. Maja mentioned you like art.' },
+    bridge: { from: 'Victor', text: "I have two tickets for Friday’s exhibition. Would you like to come?" },
+    choices: [
+      { id: 'v1', text: 'That sounds lovely.' },
+      { id: 'v2', text: 'You barely know me.' },
+      { id: 'v3', text: 'Maybe another time.' },
+    ],
+    replies: {
+      v1: [{ from: 'Victor', text: "Wonderful. I'll send the details tomorrow." }],
+      v2: [{ from: 'Victor', text: "Then let's change that." }],
+      v3: [{ from: 'Victor', text: 'Of course. No pressure.' }],
+    },
+    effects: {
+      v1: [{ rel: { victor: +1 } }],
+      v2: [{ rel: { victor: 0 } }],
+      v3: [{ rel: { victor: -1 } }],
+    },
+  },
+
+  /* --- SCENE 8: End-of-chapter selection (systemowy ekran wyboru) --- */
+  end_selector: {
+    // tę „scenę” obsłużysz jako osobny ekran z trzema wyborami
+    options: [
+      { id: 'route_riven',  text: 'Text Riven back.' },
+      { id: 'route_noah',   text: "Reply to Noah's invite." },
+      { id: 'route_victor', text: "Say yes to Victor's exhibition." },
+    ],
+  },
 };
 
-/* ===== KONTAKTY ===== */
-const CONTACTS = [
-  { id:'maja',   name:'Maja',   color:'i-maja',   initial:'M' },
-  { id:'riven',  name:'Riven',  color:'i-riven',  initial:'R' },
-  { id:'noah',   name:'Noah',   color:'i-noah',   initial:'N' },
-  { id:'victor', name:'Victor', color:'i-victor', initial:'V' },
-];
+/* ========= UNLOCK/CONDITION RULES FOR CH1 ========= */
 
-/* ===== KOMPONENTY ===== */
-function StatusBar(){
-  const [t,setT]=useState(new Date());
-  useEffect(()=>{const i=setInterval(()=>setT(new Date()),1000);return()=>clearInterval(i)},[]);
-  const time=t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  const date=t.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
-  return (<div className="status"><div className="status-time">{time}</div><div className="status-date">{date}</div><div className="status-icons">🔋 92%</div></div>);
-}
+const UnlockRules = {
+  startUnlocked: { maja: true, riven: false, noah: false, victor: false },
 
-function Home({ unreadTotal, openMessages }){
-  const apps=[['Messages','💬',openMessages],['Phone','📞'],['Gallery','🖼️'],['Clock','⏰'],['Settings','⚙️'],['Notes','📝'],['Music','🎵']];
-  return(
-    <div className="screen">
-      <div className="home">
-        <div className="grid">
-          {apps.map(([name,icon,fn])=>(
-            <button key={name} className="app" onClick={()=>fn && fn()}>
-              <div className="app-icon">{icon}</div>
-              {name==='Messages' && unreadTotal>0 && <div className="badge">{unreadTotal}</div>}
-              <div className="app-name">{name}</div>
-            </button>
-          ))}
-        </div>
-        <div className="home-hint">Dotknij „Messages”, aby wejść do czatów</div>
-      </div>
-    </div>
-  );
-}
-
-function Initial({ cls, ch, small=false }){
-  return <div className={small?'initial-sm '+cls:'initial '+cls}>{ch}</div>;
-}
-
-function MessagesList({ unlocked, chats, unread, onOpenChat, onBack }){
-  const visible = Object.keys(unlocked).filter(id=>unlocked[id]).map(id=>CONTACTS.find(c=>c.id===id));
-  const last = id => {
-    const m = chats[id]?.messages||[];
-    return m.length? m[m.length-1].text : Scripts[id]?.start?.text || '';
-  };
-  return (
-    <div className="messages">
-      <div className="topbar">
-        <button className="btn" onClick={onBack}>◀︎</button>
-        <div style={{fontWeight:700}}>Wiadomości</div>
-        <div style={{width:24}}/>
-      </div>
-      <div className="list">
-        {visible.map(c=>(
-          <button key={c.id} className="contact" onClick={()=>onOpenChat(c.id)}>
-            <Initial cls={c.color} ch={c.initial}/>
-            <div><div className="name">{c.name}</div><div className="last">{last(c.id)}</div></div>
-            {(unread[c.id]||0)>0 && <div className="badge badge-row">{unread[c.id]}</div>}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ChatView({ contact, chat, queue, choices, next, choose, onBack }){
-  return (
-    <div className="messages">
-      <div className="topbar">
-        <button className="btn" onClick={onBack}>Back</button>
-        <div style={{fontWeight:700}}>{contact.name}</div>
-        <Initial cls={contact.color} ch={contact.initial}/>
-      </div>
-      <div className="chat">
-        {chat.map((m,i)=>(
-          <div key={i} className="rowmsg" style={{justifyContent:m.me?'flex-end':'flex-start'}}>
-            {!m.me && <Initial small cls={(CONTACTS.find(x=>x.name===m.from)||contact).color} ch={(m.from||'')[0]||'?'} />}
-            <div className={`bubble ${m.me?'from-me':'from-them'}`}>
-              <div className="sender">{m.me?'Ty':m.from}</div>
-              <div>{m.text}</div>
-            </div>
-            {m.me && <Initial small cls={'i-maja'} ch={'T'}/>}
-          </div>
-        ))}
-      </div>
-      {queue.length>0
-        ? <div className="nextbar"><button className="choice" onClick={next}>Dalej ▶</button></div>
-        : <div className="choices">
-            {choices.length ? choices.map(c=>
-              <button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>
-            ) : <div style={{fontSize:12,color:'#6b7280'}}>Brak wyborów — poczekaj na wiadomość</div>}
-          </div>}
-    </div>
-  );
-}
-
-/* ===== APP (logika progresu: Maja → Riven) ===== */
-function App(){
-  const [screen,setScreen]=useState('home');       // 'home' | 'messages' | 'chat'
-  const [currentId,setCurrentId]=useState(null);
-
-  // odblokowania — start tylko Maja
-  const [unlocked,setUnlocked]=useState({maja:true,riven:false,noah:false,victor:false});
-
-  const [chats,setChats]=useState(()=>{
-    const o={}; ['maja','riven','noah','victor'].forEach(id=>o[id]={messages:[],queue:[],choices:[],step:'idle'});
-    return o;
-  });
-  const [unread,setUnread]=useState({});
-  const unreadTotal = Object.values(unread).reduce((a,b)=>a+b,0);
-
-  const setChat=(id,fn)=>setChats(prev=>({...prev,[id]:fn(prev[id])}));
-  const ensureStart=(id)=>setChats(prev=>{
-    const c=prev[id]; if(!Scripts[id]) return prev;
-    if(c.messages.length===0 && c.queue.length===0){
-      const s=Scripts[id].start;
-      return {...prev,[id]:{...c,queue:[{from:s.from,text:s.text,me:false}],step:'started'}};
-    } return prev;
-  });
-
-  const openMessages=()=>{ setScreen('messages'); ensureStart('maja'); setUnread(u=>({...u,maja:(u.maja||0)+1})) };
-  const openChat=(id)=>{ setCurrentId(id); setScreen('chat'); ensureStart(id); setUnread(u=>({...u,[id]:0})) };
-
-  const next=(id)=>setChat(id,c=>{
-    if(!c.queue.length) return c;
-    const [msg,...rest]=c.queue; const messages=[...c.messages,msg];
-    let choices=c.choices, step=c.step;
-    if(rest.length===0 && step==='started'){ choices=Scripts[id].choices||[]; step='await'; }
-    return {...c,messages,queue:rest,choices,step};
-  });
-
-  const choose=(id,choiceId)=>{
-    const sc=Scripts[id]; const pick=(sc.choices||[]).find(x=>x.id===choiceId);
-    setChat(id,c=>{
-      const messages=[...c.messages,{from:'Ty',text:pick.text,me:true}];
-      const queue=(sc.replies[choiceId]||[]).map(r=>({from:r.from,text:r.text,me:false}));
-      return {...c,messages,queue,choices:[],step:'replied'};
-    });
-
-    // 🔓 PROGRES: po odpowiedzi Maji – odblokuj tylko Rivena (z powiadomieniem)
-    if(id==='maja' && !unlocked.riven){
-      setUnlocked(u=>({...u,riven:true}));
-      ensureStart('riven');
-      setUnread(u=>({...u,riven:(u.riven||0)+1}));
+  // co odblokowuje się po efektach (wywoływane po wyborach)
+  applyEffects(effects, state) {
+    // state: { unlocked, flags:Set, rel:{riven,noah,victor} }
+    for (const eff of effects || []) {
+      if (eff.flag) state.flags.add(eff.flag);
+      if (eff.unlock) state.unlocked[eff.unlock] = true;
+      if (eff.notify) state.badges[eff.unlock] = (state.badges[eff.unlock] || 0) + 1;
+      if (eff.rel) {
+        for (const k in eff.rel) state.rel[k] = (state.rel[k] || 0) + eff.rel[k];
+      }
     }
-    // (Noah/Victor nie są odblokowywani w tej wersji)
-  };
+    return state;
+  },
 
-  return (
-    <div className="stage">
-      <div className="phone">
-        <StatusBar/>
-        <div className="screen">
-          {screen==='home' && <Home unreadTotal={unreadTotal} openMessages={openMessages}/>}
-          {screen==='messages' && <MessagesList unlocked={unlocked} chats={chats} unread={unread} onOpenChat={openChat} onBack={()=>setScreen('home')}/>}
-          {screen==='chat' && currentId && (
-            <ChatView
-              contact={CONTACTS.find(c=>c.id===currentId)}
-              chat={chats[currentId].messages}
-              queue={chats[currentId].queue}
-              choices={chats[currentId].choices}
-              next={()=>next(currentId)}
-              choose={(cid)=>choose(currentId,cid)}
-              onBack={()=>setScreen('messages')}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+  // logika progresu rozdziału 1 (kiedy pokazać nowe czaty)
+  afterChoice(contactId, choiceId, state) {
+    // 1) Po odpowiedzi Maji -> odblokuj Riven (już w effects Maji)
+    if (contactId === 'maja') {
+      state.unlocked.riven = true;
+      state.badges.riven = (state.badges.riven || 0) + 1;
+    }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App/>);
-</script>
-</body>
-</html>
+    // 2) Po Rivenie (jeśli byłeś spokojna/y) -> później w wątku Maji uruchomimy Noaha/Victora
+    // (flagę „riven_calm” nadają effects Rivena)
+  },
+
+  // warunki startu Noaha i Victora (wywołaj gdy kończysz Scenę 5 i 6)
+  canUnlockNoah(state) {
+    // miękki/neutralny ton (brak flagi 'cold')
+    return !state.flags.has('cold');
+  },
+  canUnlockVictor(state) {
+    // byłeś spokojna/y wobec Rivena
+    return state.flags.has('riven_calm');
+  },
+};
