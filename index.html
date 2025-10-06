@@ -3,37 +3,68 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>VN Phone — Avatary + Sceny + Kwiaty</title>
+<title>VN Phone — Start + Maja first + Powiadomienia + Dalej</title>
 <style>
-  :root{--bg1:#ffeef7;--bg2:#d8efff;--ink:#111827;--muted:#6b7280;--glass:rgba(255,255,255,.6);--shadow:0 10px 30px rgba(0,0,0,.25)}
-  *{box-sizing:border-box}html,body,#root{height:100%;margin:0}
+  :root{
+    --bg1:#ffeef7; --bg2:#d8efff; --ink:#111827; --muted:#6b7280;
+    --glass:rgba(255,255,255,.64); --shadow:0 10px 30px rgba(0,0,0,.25);
+    --blue:#60a5fa; --vio:#8b5cf6; --green:#34d399; --pink:#f472b6;
+  }
+  *{box-sizing:border-box}
+  html,body,#root{height:100%;margin:0}
   body{background:#0f172a;overflow:hidden;font-family:Inter,ui-sans-serif,-apple-system,Segoe UI,Roboto;color:var(--ink)}
   .stage{height:100%;display:flex;align-items:center;justify-content:center}
-  .phone{width:min(360px,calc(100vw - 16px));height:min(780px,calc(100vh - 16px));border-radius:28px;background:#000;border:4px solid #0b0f1a;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  /* telefon */
+  .phone{
+    width:min(360px,calc(100vw - 16px));
+    height:min(780px,calc(100vh - 16px));
+    border-radius:28px;background:#000;border:4px solid #0b0f1a;
+    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column
+  }
   .status{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#0b1220;color:#fff}
   .status-time{font-weight:600}.status-date{color:#9ca3af;font-size:12px}.status-icons{color:#9ca3af;font-size:12px}
   .screen{position:relative;flex:1;background:linear-gradient(135deg,var(--bg1),var(--bg2));overflow:hidden}
-  .screen::before{content:"";position:absolute;inset:0;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" opacity="0.15"><g><circle cx="60" cy="70" r="26" fill="%23f8b4d9"/><circle cx="120" cy="120" r="16" fill="%23a5f3fc"/><circle cx="320" cy="90" r="22" fill="%23fde68a"/><circle cx="250" cy="250" r="32" fill="%23c4b5fd"/><circle cx="140" cy="300" r="18" fill="%23fb7185"/></g></svg>');background-size:200px 200px}
+  /* pastelowe, kobiece kwiaty */
+  .screen::before{
+    content:"";position:absolute;inset:0;opacity:.22;
+    background-image:url('data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600">\
+<defs><radialGradient id="p" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff0"/></radialGradient></defs>\
+<g>\
+<circle cx="90" cy="90" r="46" fill="%23f8b4d9"/><circle cx="90" cy="90" r="24" fill="url(%23p)"/>\
+<circle cx="520" cy="120" r="40" fill="%23c4b5fd"/><circle cx="520" cy="120" r="20" fill="url(%23p)"/>\
+<circle cx="180" cy="290" r="36" fill="%23fde68a"/><circle cx="180" cy="290" r="18" fill="url(%23p)"/>\
+<circle cx="420" cy="360" r="48" fill="%23a7f3d0"/><circle cx="420" cy="360" r="24" fill="url(%23p)"/>\
+<circle cx="300" cy="520" r="34" fill="%23fbcfe8"/><circle cx="300" cy="520" r="17" fill="url(%23p)"/>\
+</g></svg>');
+    background-size:260px 260px; background-repeat:repeat
+  }
+
+  /* HOME */
   .home{position:relative;z-index:1;padding:20px;height:100%;display:flex;flex-direction:column}
-  .grid{flex:1;display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start;justify-items:center}
+  .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start;justify-items:center}
   .app{position:relative;display:flex;flex-direction:column;align-items:center}
-  .app-icon{width:100px;height:100px;border-radius:999px;background:var(--glass);backdrop-filter:blur(6px);overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.15);display:grid;place-items:center}
-  .app-icon img{width:100%;height:100%;object-fit:cover}
-  .badge{position:absolute;right:-4px;top:-4px;background:#ef4444;color:#fff;border-radius:999px;min-width:20px;height:20px;display:grid;place-items:center;font-size:12px;padding:0 6px;border:2px solid #fff}
-  .app-name{margin-top:8px;font-size:14px;font-weight:600;color:#1f2937;text-shadow:0 1px 2px rgba(255,255,255,.9)}
+  .app-icon{width:64px;height:64px;border-radius:16px;background:var(--glass);backdrop-filter:blur(6px);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .badge{position:absolute;right:-6px;top:-6px;background:#ef4444;color:#fff;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;font-size:11px;padding:0 6px;border:2px solid #fff}
+  .app-name{margin-top:6px;font-size:12px;font-weight:600;color:#1f2937}
   .home-hint{text-align:center;font-size:12px;color:#374151}
 
+  /* LISTA KONTAKTÓW */
   .messages{height:100%;display:flex;flex-direction:column;position:relative;z-index:1}
   .topbar{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.65);backdrop-filter:blur(6px)}
   .btn{background:transparent;border:0;font-size:14px;color:#1f2937;cursor:pointer}
   .list{padding:10px;display:flex;flex-direction:column;gap:10px;height:100%;overflow:auto}
-  .contact{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.8);border-radius:14px;padding:10px 12px;text-align:left;position:relative}
-  .avatar{width:40px;height:40px;border-radius:999px;overflow:hidden} .avatar img{width:100%;height:100%;object-fit:cover}
+  .contact{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.82);border-radius:14px;padding:10px 12px;text-align:left;position:relative}
   .name{font-weight:700}.last{font-size:12px;color:var(--muted)} .badge-row{position:absolute;right:8px;top:8px}
 
-  .chat{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;position:relative}
+  /* avatar z inicjałem */
+  .initial{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800}
+  .i-maja{background:var(--pink)} .i-riven{background:var(--blue)} .i-noah{background:var(--green)} .i-victor{background:var(--vio)}
+
+  /* CZAT */
+  .chat{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
   .rowmsg{display:flex;gap:8px;align-items:flex-start}
-  .avatar-small{width:28px;height:28px;border-radius:999px;overflow:hidden}
+  .initial-sm{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
   .bubble{max-width:76%;padding:9px 11px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
   .from-me{margin-left:auto;background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border-top-right-radius:6px}
   .from-them{background:#fff;color:var(--ink);border-top-left-radius:6px;border:1px solid rgba(0,0,0,.06)}
@@ -46,116 +77,132 @@
 <body>
 <div id="root"></div>
 
+<!-- React UMD + Babel -->
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <script type="text/babel">
-const {useEffect,useRef,useState}=React;
+const { useEffect, useState } = React;
 
-/* proste portrety SVG jako data-URI */
-function face(name,color){
-  return "data:image/svg+xml;utf8,"+encodeURIComponent(`
-    <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
-      <rect width='100%' height='100%' rx='100' fill='${color}'/>
-      <circle cx='100' cy='100' r='70' fill='#fde7d8'/>
-      <circle cx='75' cy='95' r='10' fill='#333'/>
-      <circle cx='125' cy='95' r='10' fill='#333'/>
-      <path d='M70 130 Q100 145 130 130' stroke='#333' stroke-width='4' fill='none'/>
-      <text x='100' y='190' font-size='18' text-anchor='middle' fill='#fff' font-family='sans-serif'>${name}</text>
-    </svg>
-  `);
-}
-const portraits={
-  Maja:  face('Maja','#f9a8d4'),
-  Riven: face('Riven','#93c5fd'),
-  Noah:  face('Noah','#86efac'),
-  Victor:face('Victor','#c4b5fd'),
-};
-
-/* scenariusze (skrót — działa „Dalej ▶” + wybory) */
-const Scripts={
-  maja:{ start:{from:'Maja',text:'Hej! Zgadnij kto do mnie napisał 👀'},
-    choices:[{id:'m1',text:'No mów!'},
-             {id:'m2',text:'Tylko nie Riven…'},
-             {id:'m3',text:'Nie mam siły na dramy.'}],
+/* ===== SCENARIUSZE ===== */
+const Scripts = {
+  maja: {
+    start: { from:'Maja', text:'Hej! Zgadnij kto do mnie dziś napisał 👀' },
+    choices: [
+      {id:'m1', text:'No dawaj, mów!'},
+      {id:'m2', text:'Proszę, nie mów że Riven…'},
+      {id:'m3', text:'Jestem zmęczona na dramy.'},
+    ],
     replies:{
-      m1:[{from:'Maja',text:'Riven napisał do MNIE. Po czasie…'},{from:'Maja',text:'Czy on próbuje do ciebie przez mnie dotrzeć?'}],
-      m2:[{from:'Maja',text:'……właśnie on 😅'}],
+      m1:[{from:'Maja',text:'Riven. Napisał do MNIE. Po miesiącu ciszy.'},{from:'Maja',text:'On serio próbuje gadać z tobą przez mnie?'}],
+      m2:[{from:'Maja',text:'…niestety, tak 😅'}],
       m3:[{from:'Maja',text:'Udajesz, że nie ciekawi 😉'}],
-    }},
-  riven:{ start:{from:'Riven',text:'You still awake?'},
-    choices:[{id:'r1',text:"Nie spodziewałam się."},{id:'r2',text:'Nie śpię.'},{id:'r3',text:'(zignoruj)'}],
-    replies:{ r1:[{from:'Riven',text:'Ja też. Ale spróbowałem.'}],
-              r2:[{from:'Riven',text:'Zawsze zarywasz noce.'}],
-              r3:[{from:'Riven',text:'Zasłużyłem, wiem.'}],},
+    }
   },
-  noah:{ start:{from:'Noah',text:'Hej! Maja dała mi twój numer, ok? 😅'},
-    choices:[{id:'n1',text:'Spoko, miło poznać!'},
-             {id:'n2',text:'Maja za dużo gada.'}],
-    replies:{ n1:[{from:'Noah',text:'Super! Robię dobrą kawę ☕️'}],
-              n2:[{from:'Noah',text:'Jest podekscytowana, obiecuję że jestem miły 😇'}],},
+  riven: {
+    start: { from:'Riven', text:'You still awake?' },
+    choices:[
+      {id:'r1',text:'Nie sądziłam, że napiszesz.'},
+      {id:'r2',text:'Nie śpię.'},
+      {id:'r3',text:'…(cisza)'},
+    ],
+    replies:{
+      r1:[{from:'Riven',text:'Ja też. A jednak napisałem.'}],
+      r2:[{from:'Riven',text:'Zawsze zarywałaś noce.'}],
+      r3:[{from:'Riven',text:'Zasłużyłem. Wiem.'}],
+    }
   },
-  victor:{ start:{from:'Victor',text:'Dobry wieczór. Mam bilety na wystawę.'},
-    choices:[{id:'v1',text:'Kiedy?'},
-             {id:'v2',text:'Czy my się znamy?'}],
-    replies:{ v1:[{from:'Victor',text:'Piątek 19:00. Mogę towarzyszyć.'}],
-              v2:[{from:'Victor',text:'Biblioteka. Pomogłaś z skanerem.'}],},
+  noah: {
+    start: { from:'Noah', text:'Hej! Maja dała mi Twój numer—mam nadzieję, że ok 😅' },
+    choices:[
+      {id:'n1',text:'Spoko, miło poznać!'},
+      {id:'n2',text:'Maja za dużo gada.'},
+    ],
+    replies:{
+      n1:[{from:'Noah',text:'Super! Robię świetną kawę ☕️'}],
+      n2:[{from:'Noah',text:'Jest podekscytowana. Obiecuję, jestem miły 😇'}],
+    }
+  },
+  victor: {
+    start:{ from:'Victor', text:'Dobry wieczór. Maja wspomniała, że lubisz sztukę.' },
+    choices:[
+      {id:'v1',text:'Tak. Co masz na myśli?'},
+      {id:'v2',text:'Czy my się znamy?'},
+    ],
+    replies:{
+      v1:[{from:'Victor',text:'Mam dwa bilety na piątek 19:00. Pójdziesz?'}],
+      v2:[{from:'Victor',text:'Biblioteka. Pomogłaś mi ze skanerem. Chciałem się odwdzięczyć.'}],
+    }
   },
 };
 
-/* kontakty */
-const CONTACTS=[
-  {id:'maja',name:'Maja',avatar:portraits.Maja},
-  {id:'riven',name:'Riven',avatar:portraits.Riven},
-  {id:'noah',name:'Noah',avatar:portraits.Noah},
-  {id:'victor',name:'Victor',avatar:portraits.Victor},
+/* ===== KONTAKTY (początkowo tylko Maja odblokowana) ===== */
+const CONTACTS = [
+  { id:'maja',   name:'Maja',   color:'i-maja',   initial:'M' },
+  { id:'riven',  name:'Riven',  color:'i-riven',  initial:'R' },
+  { id:'noah',   name:'Noah',   color:'i-noah',   initial:'N' },
+  { id:'victor', name:'Victor', color:'i-victor', initial:'V' },
 ];
 
-/* UI */
+/* ====== KOMPONENTY ====== */
 function StatusBar(){
   const [t,setT]=useState(new Date());
   useEffect(()=>{const i=setInterval(()=>setT(new Date()),1000);return()=>clearInterval(i)},[]);
   const time=t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const date=t.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
-  return(<div className="status"><div className="status-time">{time}</div><div className="status-date">{date}</div><div className="status-icons">🔋 92%</div></div>);
+  return (<div className="status"><div className="status-time">{time}</div><div className="status-date">{date}</div><div className="status-icons">🔋 92%</div></div>);
 }
 
-function Home({unreadTotal,onOpenMessages}){
-  return(
+function Home({ unreadTotal, openMessages }){
+  const apps = [
+    {name:'Messages', icon:'💬', onClick:openMessages, badge:unreadTotal},
+    {name:'Phone', icon:'📞'},
+    {name:'Gallery', icon:'🖼️'},
+    {name:'Clock', icon:'⏰'},
+    {name:'Settings', icon:'⚙️'},
+    {name:'Notes', icon:'📝'},
+    {name:'Music', icon:'🎵'},
+  ];
+  return (
     <div className="screen">
       <div className="home">
         <div className="grid">
-          {CONTACTS.map(c=>(
-            <button key={c.id} className="app" onClick={onOpenMessages}>
-              <div className="app-icon"><img src={c.avatar} alt={c.name}/></div>
-              {c.id==='maja' && unreadTotal>0 && <div className="badge">{unreadTotal}</div>}
-              <div className="app-name">{c.name}</div>
+          {apps.map(a=>(
+            <button key={a.name} className="app" onClick={()=>a.onClick && a.onClick()}>
+              <div className="app-icon">{a.icon}</div>
+              {!!a.badge && <div className="badge">{a.badge}</div>}
+              <div className="app-name">{a.name}</div>
             </button>
           ))}
         </div>
-        <div className="home-hint">Dotknij, aby wejść do Wiadomości</div>
+        <div className="home-hint">Dotknij „Messages”, aby wejść do czatów</div>
       </div>
     </div>
   );
 }
 
-function MessagesList({chats,unread,onOpenChat,onBack}){
-  const last=id=>{
-    const m=chats[id]?.messages||[];
-    return m.length?m[m.length-1].text:'Hej! Zgadnij kto do mnie napisał 👀';
+function Initial({ cls, ch, small=false }){
+  return <div className={small?'initial-sm '+cls:'initial '+cls}>{ch}</div>;
+}
+
+function MessagesList({ unlocked, chats, unread, onOpenChat, onBack }){
+  const visible = CONTACTS.filter(c=>unlocked[c.id]);
+  const last = id => {
+    const m = chats[id]?.messages||[];
+    return m.length? m[m.length-1].text : Scripts[id].start.text;
   };
-  return(
+  return (
     <div className="messages">
       <div className="topbar">
         <button className="btn" onClick={onBack}>◀︎</button>
         <div style={{fontWeight:700}}>Wiadomości</div>
-        <div style={{width:32}}/>
+        <div style={{width:24}}/>
       </div>
       <div className="list">
-        {CONTACTS.map(c=>(
+        {visible.map(c=>(
           <button key={c.id} className="contact" onClick={()=>onOpenChat(c.id)}>
-            <div className="avatar"><img src={c.avatar} alt={c.name}/></div>
+            <Initial cls={c.color} ch={c.initial}/>
             <div><div className="name">{c.name}</div><div className="last">{last(c.id)}</div></div>
             {(unread[c.id]||0)>0 && <div className="badge badge-row">{unread[c.id]}</div>}
           </button>
@@ -165,100 +212,119 @@ function MessagesList({chats,unread,onOpenChat,onBack}){
   );
 }
 
-function ChatView({contact,chat,queue,choices,next,choose,onBack}){
-  return(
+function ChatView({ contact, chat, queue, choices, next, choose, onBack }){
+  return (
     <div className="messages">
       <div className="topbar">
         <button className="btn" onClick={onBack}>Back</button>
         <div style={{fontWeight:700}}>{contact.name}</div>
-        <div className="avatar"><img src={contact.avatar} alt={contact.name}/></div>
+        <Initial cls={contact.color} ch={contact.initial}/>
       </div>
+
       <div className="chat">
         {chat.map((m,i)=>(
           <div key={i} className="rowmsg" style={{justifyContent:m.me?'flex-end':'flex-start'}}>
-            {!m.me && <div className="avatar-small"><img src={portraits[m.from]||portraits.Maja} alt={m.from}/></div>}
+            {!m.me && <Initial small cls={(CONTACTS.find(x=>x.name===m.from)||contact).color} ch={(m.from||'')[0]||'?'} />}
             <div className={`bubble ${m.me?'from-me':'from-them'}`}>
               <div className="sender">{m.me?'Ty':m.from}</div>
               <div>{m.text}</div>
             </div>
-            {m.me && <div className="avatar-small"><img src={portraits.Maja} alt="You"/></div>}
+            {m.me && <Initial small cls={'i-maja'} ch={'T'}/>}
           </div>
         ))}
       </div>
+
       {queue.length>0
         ? <div className="nextbar"><button className="choice" onClick={next}>Dalej ▶</button></div>
         : <div className="choices">
-            {choices.length?choices.map(c=><button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>)
-            : <div style={{fontSize:12,color:'#6b7280'}}>Brak wyborów — poczekaj na wiadomość</div>}
+            {choices.length ? choices.map(c=>
+              <button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>
+            ) : <div style={{fontSize:12,color:'#6b7280'}}>Brak wyborów — poczekaj na wiadomość</div>}
           </div>}
     </div>
   );
 }
 
-/* APP — przywraca postęp scen */
+/* ====== APP (logika) ====== */
 function App(){
-  const [screen,setScreen]=useState('home');     // home | messages | chat
-  const [currentId,setCurrentId]=useState(null);
-  const [chats,setChats]=useState(()=>{
-    const o={}; for(const c of CONTACTS){ o[c.id]={messages:[],queue:[],choices:[],step:'idle'} } return o;
+  const [screen,setScreen]   = useState('home');            // 'home' | 'messages' | 'chat'
+  const [currentId,setCurrentId] = useState(null);
+
+  // odblokowania – na start tylko Maja
+  const [unlocked,setUnlocked] = useState({maja:true, riven:false, noah:false, victor:false});
+
+  // czaty
+  const [chats,setChats] = useState(()=>{
+    const o={}; for (const c of CONTACTS){ o[c.id]={messages:[],queue:[],choices:[],step:'idle'} }
+    return o;
   });
-  const [unread,setUnread]=useState({}); const unreadTotal=Object.values(unread).reduce((a,b)=>a+b,0);
 
-  const setChat=(id,fn)=>setChats(prev=>({...prev,[id]:fn(prev[id])}));
+  // powiadomienia (badge)
+  const [unread,setUnread] = useState({});  // id -> liczba
+  const unreadTotal = Object.values(unread).reduce((a,b)=>a+b,0);
 
-  const runStart=(id)=>{
-    const sc=Scripts[id]; if(!sc) return;
-    setChat(id,c=>({...c,queue:[{from:sc.start.from,text:sc.start.text,me:false}],choices:[],step:'started'}));
+  const setChat=(id,updater)=>setChats(prev=>({...prev,[id]:updater(prev[id])}));
+
+  // start rozmowy, jeśli pusto
+  const ensureStart = (id) => {
+    setChats(prev=>{
+      const c=prev[id];
+      if(c.messages.length===0 && c.queue.length===0){
+        const s=Scripts[id].start;
+        return {...prev,[id]:{...c,queue:[{from:s.from,text:s.text,me:false}],step:'started'}};
+      }
+      return prev;
+    });
   };
-  const next=(id)=>{
-    setChat(id,c=>{
+
+  // sterowanie
+  const openMessages = () => {
+    setScreen('messages');
+    // Maja pojawia się pierwsza
+    ensureStart('maja');
+    setUnread(u=>({...u, maja:(u.maja||0)+1}));
+    // „Powiadomienia” od chłopaków po chwili — powodują dołączenie do listy i badge
+    setTimeout(()=>{ if(!unlocked.riven){ setUnlocked(u=>({...u,riven:true})); ensureStart('riven'); setUnread(u=>({...u,riven:(u.riven||0)+1})); } }, 5000);
+    setTimeout(()=>{ if(!unlocked.noah){  setUnlocked(u=>({...u,noah:true}));  ensureStart('noah');  setUnread(u=>({...u,noah:(u.noah||0)+1})); } }, 9000);
+    setTimeout(()=>{ if(!unlocked.victor){setUnlocked(u=>({...u,victor:true}));ensureStart('victor');setUnread(u=>({...u,victor:(u.victor||0)+1}));} }, 13000);
+  };
+  const openChat = (id) => { setCurrentId(id); setScreen('chat'); ensureStart(id); setUnread(u=>({...u,[id]:0})); };
+
+  // „Dalej”
+  const next = (id) => {
+    setChat(id, c=>{
       if(!c.queue.length) return c;
-      const [msg,...rest]=c.queue; const messages=[...c.messages,msg];
-      let choices=c.choices,step=c.step;
-      if(rest.length===0 && step==='started'){ choices=Scripts[id].choices||[]; step='await'; }
+      const [msg,...rest]=c.queue;
+      const messages=[...c.messages,msg];
+      let choices=c.choices, step=c.step;
+      if(rest.length===0 && step==='started'){ choices=(Scripts[id].choices||[]); step='await'; }
       return {...c,messages,queue:rest,choices,step};
     });
   };
-  const choose=(id,choiceId)=>{
-    const sc=Scripts[id]; const pick=(sc.choices||[]).find(x=>x.id===choiceId);
-    setChat(id,c=>{
+
+  // wybór
+  const choose = (id, choiceId) => {
+    const sc = Scripts[id]; const pick = (sc.choices||[]).find(x=>x.id===choiceId);
+    setChat(id, c=>{
       const messages=[...c.messages,{from:'Ty',text:pick.text,me:true}];
       const queue=(sc.replies[choiceId]||[]).map(r=>({from:r.from,text:r.text,me:false}));
       return {...c,messages,queue,choices:[],step:'replied'};
     });
   };
 
-  const openMessages=()=>{
-    setScreen('messages');
-    // jednorazowo zainicjuj Maję na liście (jeśli pusto)
-    setChats(prev=>{
-      if(prev.maja.messages.length===0 && prev.maja.queue.length===0){
-        const sc=Scripts.maja;
-        return {...prev,maja:{...prev.maja,queue:[{from:sc.start.from,text:sc.start.text,me:false}],step:'started'}};
-      }
-      return prev;
-    });
-    setUnread(u=>({...u,maja:1,...u}));
-  };
-
-  const openChat=(id)=>{
-    setCurrentId(id); setScreen('chat');
-    // start, jeśli pusto
-    setChats(prev=>{
-      const c=prev[id]; if(c.messages.length===0 && c.queue.length===0){ const sc=Scripts[id];
-        return {...prev,[id]:{...c,queue:[{from:sc.start.from,text:sc.start.text,me:false}],step:'started'}};
-      } return prev;
-    });
-    setUnread(u=>({...u,[id]:0}));
-  };
-
-  return(
+  return (
     <div className="stage">
       <div className="phone">
         <StatusBar/>
         <div className="screen">
-          {screen==='home' && <Home unreadTotal={unreadTotal} onOpenMessages={openMessages}/>}
-          {screen==='messages' && <MessagesList chats={chats} unread={unread} onOpenChat={openChat} onBack={()=>setScreen('home')}/>}
+          {screen==='home' && <Home unreadTotal={unreadTotal} openMessages={openMessages}/>}
+          {screen==='messages' && <MessagesList
+            unlocked={unlocked}
+            chats={chats}
+            unread={unread}
+            onOpenChat={openChat}
+            onBack={()=>setScreen('home')}
+          />}
           {screen==='chat' && currentId && (
             <ChatView
               contact={CONTACTS.find(c=>c.id===currentId)}
@@ -275,7 +341,8 @@ function App(){
     </div>
   );
 }
-const root=ReactDOM.createRoot(document.getElementById('root'));
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App/>);
 </script>
 </body>
