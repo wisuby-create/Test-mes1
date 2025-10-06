@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>VN Demo — Phone-in-Phone (UMD)</title>
+    <title>VN Demo — Phone-in-Phone (Avatars + Scenes 1–8)</title>
     <style>
       :root{--bg1:#f8d7f0;--bg2:#cbe4ff;--glass:rgba(255,255,255,.55);--glass-strong:rgba(255,255,255,.75);--ink:#111827;--muted:#6b7280;--shadow:0 10px 30px rgba(0,0,0,.25);--radius-xl:22px}
       *{box-sizing:border-box}html,body,#root{height:100%;margin:0;background:#0f172a;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;color:var(--ink)}
@@ -15,7 +15,7 @@
       .home{padding:24px;height:100%;display:flex;flex-direction:column}
       .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
       .app{display:flex;flex-direction:column;align-items:center}
-      .app-icon{width:64px;height:64px;border-radius:16px;background:var(--glass-strong);display:grid;place-items:center;font-size:22px;box-shadow:0 6px 18px rgba(0,0,0,.12);backdrop-filter:blur(6px)}
+      .app-icon{width:64px;height:64px;border-radius:16px;background:var(--glass-strong);display:grid;place-items:center;font-size:26px;box-shadow:0 6px 18px rgba(0,0,0,.12);backdrop-filter:blur(6px)}
       .app-name{margin-top:6px;font-size:12px;color:#1f2937}.home-hint{text-align:center;font-size:12px;color:#374151;margin-top:6px}
       .messages{height:100%;display:flex;flex-direction:column}
       .topbar{padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
@@ -23,23 +23,28 @@
       .btn-pill{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.6);backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(0,0,0,.08)}
       .chat{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;position:relative}
       .chat::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.25);backdrop-filter:blur(4px);pointer-events:none}
-      .bubble{max-width:78%;padding:10px 12px;border-radius:var(--radius-xl);box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(8px);opacity:0;animation:pop .28s ease forwards}
+      .rowmsg{display:flex;gap:8px;align-items:flex-start}
+      .avatar{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;flex:0 0 28px;user-select:none}
+      .bubble{max-width:76%;padding:10px 12px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(8px);opacity:0;animation:pop .28s ease forwards}
       .from-me{margin-left:auto;background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border-top-right-radius:6px}
       .from-them{background:#fff;color:var(--ink);border-top-left-radius:6px;border:1px solid rgba(0,0,0,.06)}
-      .meta{font-size:11px;color:var(--muted);margin-bottom:6px}@keyframes pop{to{transform:translateY(0);opacity:1}}
-      .choices{padding:12px 14px;background:rgba(255,255,255,.8);border-top:1px solid rgba(0,0,0,.06);display:grid;gap:10px}
+      .sender{font-size:11px;font-weight:700;margin-bottom:4px;opacity:.85}
+      .meta{font-size:11px;color:var(--muted);margin:4px 0 0 36px}
+      @keyframes pop{to{transform:translateY(0);opacity:1}}
+      .choices{padding:12px 14px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06);display:grid;gap:10px}
       .choice{text-align:left;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#fff,#f5f8ff);border:1px solid rgba(0,0,0,.06);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
       .choice:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(0,0,0,.08)}
       .card{background:var(--glass);border:1px solid rgba(0,0,0,.06);padding:12px;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.08)}
       .input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.12);font-size:14px}
-      .primary{background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;box-shadow:0 8px 18px rgba(79,70,229,.35)}
-      .center{height:100%;display:grid;place-items:center}.panel{background:var(--glass-strong);border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:20px;text-align:center;backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.2)}.row{display:flex;gap:10px;justify-content:center}
+      .primary{background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border:0;padding:10px 14px;border-radius:10px;cursor:pointer;box-shadow:0 8px 18px rgba(79,70,229,.35)}
+      .row{display:flex;gap:10px;justify-content:flex-end}
+      .nextbar{padding:10px 14px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06);display:flex;justify-content:flex-end}
+      .right{justify-content:flex-end}
     </style>
   </head>
   <body>
     <div id="root"></div>
 
-    <!-- React UMD + Babel (działa z GitHub Pages) -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -47,6 +52,16 @@
     <script type="text/babel">
       const { useEffect, useRef, useState } = React;
 
+      // ============ AVATARS ============
+      const AVA = {
+        Maja:   { bg:'#ec4899', text:'MJ' },    // pink
+        Riven:  { bg:'#0ea5e9', text:'RV' },    // sky
+        Noah:   { bg:'#10b981', text:'NH' },    // emerald
+        Victor: { bg:'#8b5cf6', text:'VC' },    // violet
+        You:    { bg:'#374151', text:'YOU' },   // gray
+      };
+
+      // ============ SCENES (1–8) ============
       const scenes = {
         scene1:{id:'scene1',actor:'Maja',text:'Hey! Guess who texted me today 👀',
           choices:[
@@ -81,8 +96,65 @@
             s3c2:[{from:'Maja',text:"'Just hi'? You? Since when are you subtle? 😂"},{from:'Maja',text:"Come on, don't pretend you don't care."}],
             s3c3:[{from:'Maja',text:'Yikes, harsh. But... fair.'},{from:'Maja',text:"You don't owe him a reply. He hurt you once already."}],
           }},
+        // --- Scene 4: Noah enters (warm puppy energy) ---
+        scene4:{id:'scene4',actor:'Noah',text:'Hey! Maja gave me your number. Hope that’s okay 😅',
+          choices:[
+            {id:'s4c1',text:"It’s okay! Nice to meet you, Noah."},
+            {id:'s4c2',text:"Maja talks too much."},
+            {id:'s4c3',text:"Who are you again?"},
+          ],
+          replies:{
+            s4c1:[{from:'Noah',text:'Nice to meet you!! I make terrible pancakes and excellent coffee. Wanna test that theory sometime? ☕️🥞'}],
+            s4c2:[{from:'Noah',text:'Haha, she’s just excited. I’m harmless, promise.'}],
+            s4c3:[{from:'Noah',text:'Right, sorry! I’m Noah. We’ve bumped into each other at the campus café once.'}],
+          }},
+        // --- Scene 5: Victor enters (polite, a bit distant) ---
+        scene5:{id:'scene5',actor:'Victor',text:'Good evening. Maja suggested we could speak about the exhibition tickets.',
+          choices:[
+            {id:'s5c1',text:"Sounds great. When is it?"},
+            {id:'s5c2',text:"Do I know you?"},
+            {id:'s5c3',text:"Maybe another time."},
+          ],
+          replies:{
+            s5c1:[{from:'Victor',text:'Friday, 7pm. Contemporary Art Center. Two tickets with your name.'},{from:'Victor',text:'If you would like company, I can adjust my schedule.'}],
+            s5c2:[{from:'Victor',text:'We met briefly at the library. I was the one you helped with the broken scanner.'}],
+            s5c3:[{from:'Victor',text:'Understood. The offer remains open.'}],
+          }},
+        // --- Scene 6: Maja stirs the pot ---
+        scene6:{id:'scene6',actor:'Maja',text:'Sooo… spill. Noah texted you too, right? And Victor??',
+          choices:[
+            {id:'s6c1',text:"Noah’s sweet. Victor is… intriguing."},
+            {id:'s6c2',text:"Not sure about any of them."},
+            {id:'s6c3',text:"Why is Riven suddenly back…"},
+          ],
+          replies:{
+            s6c1:[{from:'Maja',text:'IKR!! I knew you’d like them 😏'}],
+            s6c2:[{from:'Maja',text:'Fair. Take your time. Your heart, your pace.'}],
+            s6c3:[{from:'Maja',text:'Because trouble always circles back 🙄 But you’re not the same you anymore.'}],
+          }},
+        // --- Scene 7: Mini-branch choice (who to meet first) ---
+        scene7:{id:'scene7',actor:'Maja',text:'Okay, choose: cozy coffee with Noah ☕️, quiet museum with Victor 🖼️, or… risky talk with Riven? 😬',
+          choices:[
+            {id:'s7c1',text:"Coffee with Noah"},
+            {id:'s7c2',text:"Museum with Victor"},
+            {id:'s7c3',text:"Talk with Riven"},
+          ],
+          replies:{
+            s7c1:[{from:'Maja',text:'Yesss! I’ll nudge him. Wear something comfy 💛'}],
+            s7c2:[{from:'Maja',text:'Uuu classy. I’ll tell him to keep 7pm free.'}],
+            s7c3:[{from:'Maja',text:'Bold. I’m here if you need me after.'}],
+          }},
+        // --- Scene 8: Chapter end hook ---
+        scene8:{id:'scene8',actor:'System',text:'Plan set. Your next step is locked in. (Gallery CG unlocked if you picked a date!)',
+          choices:[
+            {id:'s8c1',text:"Back to Home"},
+          ],
+          replies:{
+            s8c1:[{from:'System',text:'Chapter 1 complete.'}],
+          }},
       };
 
+      // ============ UI ============
       function StatusBar(){
         const [time,setTime]=useState(new Date());
         useEffect(()=>{const t=setInterval(()=>setTime(new Date()),1000);return()=>clearInterval(t)},[]);
@@ -92,18 +164,26 @@
       }
 
       function Home({onOpenMessages}){
-        const apps=['Messages','Phone','Gallery','Clock','Settings','Notes','Music'];
+        const apps=[['Messages','💬'],['Phone','📞'],['Gallery','🖼️'],['Clock','⏰'],['Settings','⚙️'],['Notes','📝'],['Music','🎵']];
         return (<div className="home">
           <div className="grid">
-            {apps.map(n=>(<button key={n} className="app" onClick={()=>n==='Messages'&&onOpenMessages()}>
-              <div className="app-icon">{n[0]}</div><div className="app-name">{n}</div>
-            </button>))}
+            {apps.map(([n,icon])=>(
+              <button key={n} className="app" onClick={()=>n==='Messages'&&onOpenMessages()}>
+                <div className="app-icon">{icon}</div><div className="app-name">{n}</div>
+              </button>
+            ))}
           </div>
           <div className="home-hint">Tap an app to open</div>
         </div>);
       }
 
-      function Messages({ playerName, setPlayerName, nameSet, setNameSet, chat, typing, choices, choose, onBack, ambientOn, toggleAmbient }){
+      function Avatar({ who }){
+        const data = AVA[who] || AVA['You'];
+        const style = { background:data.bg };
+        return <div className="avatar" style={style}>{data.text}</div>;
+      }
+
+      function Messages({ playerName, setPlayerName, nameSet, setNameSet, chat, queue, typing, choices, choose, onBack, next, ambientOn, toggleAmbient }){
         const nameRef=useRef(null);
         useEffect(()=>{ if(!nameSet && nameRef.current) nameRef.current.focus(); },[nameSet]);
         return (<div className="messages">
@@ -112,38 +192,50 @@
             <div style={{fontWeight:600}}>Messages</div>
             <button className="btn btn-pill" onClick={toggleAmbient}>{ambientOn?'Music: On':'Music: Off'}</button>
           </div>
+
           <div className="chat">
             {!nameSet && (<div className="card">
               <div style={{fontSize:14,color:'var(--muted)',marginBottom:8}}>Welcome — what's your name?</div>
               <input className="input" ref={nameRef} value={playerName} onChange={e=>setPlayerName(e.target.value)} placeholder="Type your name..." />
-              <div style={{display:'flex',justifyContent:'flex-end',marginTop:8}}>
-                <button className="primary" onClick={()=>{ if((playerName||'').trim()) setNameSet(true); }}>Set</button>
-              </div>
+              <div className="row"><button className="primary" onClick={()=>{ if((playerName||'').trim()) setNameSet(true); }}>Set</button></div>
             </div>)}
-            {chat.map((m,i)=>(<div key={i} style={{display:'flex',flexDirection:'column',alignItems:m.me?'flex-end':'flex-start'}}>
-              <div className="meta">{m.me?(playerName||'You'):m.from}</div>
-              <div className={`bubble ${m.me?'from-me':'from-them'}`}>{m.text}</div>
-            </div>))}
+
+            {chat.map((m,i)=>(
+              <div key={i} className="rowmsg" style={{justifyContent: m.me?'flex-end':'flex-start'}}>
+                {!m.me && <Avatar who={m.from}/>}
+                <div className={`bubble ${m.me?'from-me':'from-them'}`} style={{maxWidth:'78%'}}>
+                  <div className="sender">{m.me ? (playerName||'You') : m.from}</div>
+                  <div>{m.text}</div>
+                </div>
+                {m.me && <Avatar who={'You'}/>}
+              </div>
+            ))}
+
             {typing && (<div className="meta">...typing</div>)}
           </div>
-          <div className="choices">
-            {choices && choices.length>0 ? choices.map(c=>(<button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>))
-              : (<div style={{fontSize:12,color:'var(--muted)'}}>No choices available yet — follow the messages</div>)}
-          </div>
+
+          {queue.length>0
+            ? (<div className="nextbar"><button className="primary" onClick={next}>Dalej ▶</button></div>)
+            : (<div className="choices">
+                {choices && choices.length>0 ? choices.map(c=>(<button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>))
+                  : (<div style={{fontSize:12,color:'var(--muted)'}}>Brak wyborów — śledź wiadomości</div>)}
+               </div>)
+          }
         </div>);
       }
 
       function ChapterEnd({onBack}){
-        return (<div className="center"><div className="panel">
-          <div style={{fontSize:22,fontWeight:700,marginBottom:6}}>Chapter 1 Complete</div>
-          <div style={{fontSize:14,color:'var(--muted)',marginBottom:14}}>Gallery unlocked: 1/3</div>
-          <div className="row">
+        return (<div className="home"><div className="card" style="padding:20px;text-align:center">
+          <div style="font-size:22px;font-weight:700;margin-bottom:6px">Chapter 1 Complete</div>
+          <div style="font-size:14px;color:var(--muted);margin-bottom:14px">Gallery unlocked: 1/3</div>
+          <div class="row" style="justify-content:center">
             <button className="primary" onClick={onBack}>Back to Home</button>
             <button className="choice" disabled>Next Chapter (locked)</button>
           </div>
         </div></div>);
       }
 
+      // ============ APP with queue ============
       function App(){
         const [playerName,setPlayerName]=useState('');
         const [nameSet,setNameSet]=useState(false);
@@ -152,6 +244,8 @@
         const [chat,setChat]=useState([]);
         const [typing,setTyping]=useState(false);
         const [choices,setChoices]=useState([]);
+        const [queue,setQueue]=useState([]);   // messages waiting for "Next"
+        const [afterQueue,setAfterQueue]=useState(null); // {type:'choices'|'scene', target:'sceneX'|'end'}
         const [ambientOn,setAmbientOn]=useState(false);
 
         const audioCtxRef=useRef(null); const padNodesRef=useRef(null);
@@ -163,17 +257,60 @@
           const now=ctx.currentTime; gain.gain.setValueAtTime(0.0001,now); gain.gain.exponentialRampToValueAtTime(0.02,now+2);
           o1.start(); o2.start(); padNodesRef.current={ctx,gain,o1,o2,og}; setAmbientOn(true); };
         const stopAmbient=()=>{ const n=padNodesRef.current; if(!n) return; const {ctx,gain,o1,o2}=n; const t=ctx.currentTime;
-          gain.gain.exponentialRampToValueAtTime(0.0001,t+1.2); setTimeout(()=>{ try{o1.stop();o2.stop();}catch(e){} padNodesRef.current=null; audioCtxRef.current=null; },1300); setAmbientOn(false); };
+          gain.gain.exponentialRampToValueAtTime(0.0001,t+1.2); setTimeout(()=>{ try{o1.stop();o2.stop();}catch(e){} padNodesRef.current=null; audioCtxRef.current=null; },1300);
+          setAmbientOn(false); };
         const toggleAmbient=()=> ambientOn?stopAmbient():startAmbient();
         const playPing=()=>{ const ctx=audioCtxRef.current; if(!ctx) return; const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=880; const g=ctx.createGain(); g.gain.value=0.0001; o.connect(g); g.connect(ctx.destination);
           const t=ctx.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.02,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.5); o.start(); setTimeout(()=>{ try{o.stop();}catch(e){} },520); };
 
-        const openMessages=()=>{ setScreen('messages'); setTimeout(()=>runScene('scene1'),500); };
         const append=(m)=> setChat(prev=>[...prev,m]);
-        const runScene=(sceneId)=>{ const sc=scenes[sceneId]; if(!sc) return; setCurrentScene(sceneId); setChat([]); append({from:sc.actor,text:sc.text,me:false}); playPing(); setTimeout(()=>setChoices(sc.choices),750); };
-        const choose=(choiceId)=>{ const sc=scenes[currentScene]; if(!sc) return; setChoices([]); const c=sc.choices.find(x=>x.id===choiceId); append({from:playerName||'You',text:c.text,me:true}); setTyping(true);
-          setTimeout(()=>{ setTyping(false); const replies=sc.replies[choiceId]||[]; replies.forEach((r,i)=> setTimeout(()=>{ append({from:r.from,text:r.text,me:false}); playPing(); }, 300*i+150));
-            setTimeout(()=>{ if(currentScene==='scene1') runScene('scene2'); else if(currentScene==='scene2') runScene('scene3'); else setScreen('end'); }, 800+replies.length*320); },800); };
+
+        const runScene=(sceneId)=>{
+          const sc=scenes[sceneId]; if(!sc) return;
+          setCurrentScene(sceneId); setChat([]); setChoices([]);
+          setQueue([{from:sc.actor,text:sc.text,me:false}]); // first message waits for "Next"
+          setAfterQueue({type:'choices'}); // then show choices
+        };
+
+        const next=()=>{
+          if(queue.length===0) return;
+          const [msg, ...rest] = queue;
+          append(msg);
+          setQueue(rest);
+          if(!msg.me) playPing();
+
+          if(rest.length===0 && afterQueue){
+            if(afterQueue.type==='choices'){
+              const sc=scenes[currentScene]; setChoices(sc.choices||[]);
+              setAfterQueue(null);
+            } else if(afterQueue.type==='scene'){
+              if(afterQueue.target==='end') setScreen('end');
+              else { setAfterQueue(null); runScene(afterQueue.target); }
+            }
+          }
+        };
+
+        const choose=(choiceId)=>{
+          const sc=scenes[currentScene]; if(!sc) return;
+          setChoices([]);
+          const pick=sc.choices.find(x=>x.id===choiceId);
+          append({from:playerName||'You',text:pick.text,me:true});
+          // queue their replies
+          const replies=sc.replies[choiceId]||[];
+          setQueue(replies.map(r=>({from:r.from,text:r.text,me:false})));
+
+          // chain scenes
+          if(currentScene==='scene1') setAfterQueue({type:'scene',target:'scene2'});
+          else if(currentScene==='scene2') setAfterQueue({type:'scene',target:'scene3'});
+          else if(currentScene==='scene3') setAfterQueue({type:'scene',target:'scene4'});
+          else if(currentScene==='scene4') setAfterQueue({type:'scene',target:'scene5'});
+          else if(currentScene==='scene5') setAfterQueue({type:'scene',target:'scene6'});
+          else if(currentScene==='scene6') setAfterQueue({type:'scene',target:'scene7'});
+          else if(currentScene==='scene7') setAfterQueue({type:'scene',target:'scene8'});
+          else setAfterQueue({type:'scene',target:'end'});
+        };
+
+        const openMessages=()=>{ setScreen('messages'); runScene('scene1'); };
 
         return (<div className="stage">
           <div className="phone">
@@ -183,7 +320,8 @@
               {screen==='messages' && <Messages
                 playerName={playerName} setPlayerName={setPlayerName}
                 nameSet={nameSet} setNameSet={setNameSet}
-                chat={chat} typing={typing} choices={choices} choose={choose}
+                chat={chat} queue={queue} typing={typing}
+                choices={choices} choose={choose} next={next}
                 onBack={()=>setScreen('home')} ambientOn={ambientOn} toggleAmbient={toggleAmbient}
               />}
               {screen==='end' && <ChapterEnd onBack={()=>setScreen('home')}/>}
