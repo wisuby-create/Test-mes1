@@ -28,4 +28,172 @@
       .from-them{background:#fff;color:var(--ink);border-top-left-radius:6px;border:1px solid rgba(0,0,0,.06)}
       .meta{font-size:11px;color:var(--muted);margin-bottom:6px}@keyframes pop{to{transform:translateY(0);opacity:1}}
       .choices{padding:12px 14px;background:rgba(255,255,255,.8);border-top:1px solid rgba(0,0,0,.06);display:grid;gap:10px}
-      .choice{text-align:left;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#fff,#f5f8ff);border:1px solid
+      .choice{text-align:left;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#fff,#f5f8ff);border:1px solid rgba(0,0,0,.06);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+      .choice:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(0,0,0,.08)}
+      .card{background:var(--glass);border:1px solid rgba(0,0,0,.06);padding:12px;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.08)}
+      .input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.12);font-size:14px}
+      .primary{background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;box-shadow:0 8px 18px rgba(79,70,229,.35)}
+      .center{height:100%;display:grid;place-items:center}.panel{background:var(--glass-strong);border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:20px;text-align:center;backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.2)}.row{display:flex;gap:10px;justify-content:center}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React UMD + Babel (działa z GitHub Pages) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useEffect, useRef, useState } = React;
+
+      const scenes = {
+        scene1:{id:'scene1',actor:'Maja',text:'Hey! Guess who texted me today 👀',
+          choices:[
+            {id:'s1c1',text:"Don't keep me in suspense!"},
+            {id:'s1c2',text:"Please don't tell me it's Riven again..."},
+            {id:'s1c3',text:"Ugh, it's too late for drama."},
+          ],
+          replies:{
+            s1c1:[{from:'Maja',text:"You'll never believe it. Riven just texted ME. Like... after all this time."},{from:'Maja',text:"Do you think he's trying to talk to you through me? 👀"}],
+            s1c2:[{from:'Maja',text:"...You guessed it right 😅"},{from:'Maja',text:"He actually texted ME. What does he even want after ghosting you?"}],
+            s1c3:[{from:'Maja',text:"You say that, but I know you're curious 😏"},{from:'Maja',text:"Riven just texted me. Out of nowhere."}],
+          }},
+        scene2:{id:'scene2',actor:'Riven',text:'You still awake?',
+          choices:[
+            {id:'s2c1',text:"Didn't expect to hear from you."},
+            {id:'s2c2',text:"Always. Couldn't sleep anyway."},
+            {id:'s2c3',text:'Ignore the message.'},
+          ],
+          replies:{
+            s2c1:[{from:'Riven',text:"Yeah. Guess I wasn't expecting to text you either."},{from:'Riven',text:'But here we are. You still mad at me?'}],
+            s2c2:[{from:'Riven',text:"Can't sleep either? Figures."},{from:'Riven',text:'You always stayed up too late.'}],
+            s2c3:[{from:'Riven',text:"Ignoring me now? Can't say I don't deserve it."},{from:'Riven',text:'But I had to try.'}],
+          }},
+        scene3:{id:'scene3',actor:'Maja',text:'Sooo... did you answer him? 👀',
+          choices:[
+            {id:'s3c1',text:"Of course I did. I'm not a coward."},
+            {id:'s3c2',text:"I just said hi. That's all."},
+            {id:'s3c3',text:"No. I don't owe him anything."},
+          ],
+          replies:{
+            s3c1:[{from:'Maja',text:'Ooooh, look at you! Miss braveheart!'},{from:'Maja',text:'What did he say? Tell me!'}],
+            s3c2:[{from:'Maja',text:"'Just hi'? You? Since when are you subtle? 😂"},{from:'Maja',text:"Come on, don't pretend you don't care."}],
+            s3c3:[{from:'Maja',text:'Yikes, harsh. But... fair.'},{from:'Maja',text:"You don't owe him a reply. He hurt you once already."}],
+          }},
+      };
+
+      function StatusBar(){
+        const [time,setTime]=useState(new Date());
+        useEffect(()=>{const t=setInterval(()=>setTime(new Date()),1000);return()=>clearInterval(t)},[]);
+        const tStr=time.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+        const dStr=time.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'});
+        return (<div className="status"><div className="status-time">{tStr}</div><div className="status-date">{dStr}</div><div className="status-icons">🔋 92% 📶</div></div>);
+      }
+
+      function Home({onOpenMessages}){
+        const apps=['Messages','Phone','Gallery','Clock','Settings','Notes','Music'];
+        return (<div className="home">
+          <div className="grid">
+            {apps.map(n=>(<button key={n} className="app" onClick={()=>n==='Messages'&&onOpenMessages()}>
+              <div className="app-icon">{n[0]}</div><div className="app-name">{n}</div>
+            </button>))}
+          </div>
+          <div className="home-hint">Tap an app to open</div>
+        </div>);
+      }
+
+      function Messages({ playerName, setPlayerName, nameSet, setNameSet, chat, typing, choices, choose, onBack, ambientOn, toggleAmbient }){
+        const nameRef=useRef(null);
+        useEffect(()=>{ if(!nameSet && nameRef.current) nameRef.current.focus(); },[nameSet]);
+        return (<div className="messages">
+          <div className="topbar">
+            <button className="btn" onClick={onBack}>Back</button>
+            <div style={{fontWeight:600}}>Messages</div>
+            <button className="btn btn-pill" onClick={toggleAmbient}>{ambientOn?'Music: On':'Music: Off'}</button>
+          </div>
+          <div className="chat">
+            {!nameSet && (<div className="card">
+              <div style={{fontSize:14,color:'var(--muted)',marginBottom:8}}>Welcome — what's your name?</div>
+              <input className="input" ref={nameRef} value={playerName} onChange={e=>setPlayerName(e.target.value)} placeholder="Type your name..." />
+              <div style={{display:'flex',justifyContent:'flex-end',marginTop:8}}>
+                <button className="primary" onClick={()=>{ if((playerName||'').trim()) setNameSet(true); }}>Set</button>
+              </div>
+            </div>)}
+            {chat.map((m,i)=>(<div key={i} style={{display:'flex',flexDirection:'column',alignItems:m.me?'flex-end':'flex-start'}}>
+              <div className="meta">{m.me?(playerName||'You'):m.from}</div>
+              <div className={`bubble ${m.me?'from-me':'from-them'}`}>{m.text}</div>
+            </div>))}
+            {typing && (<div className="meta">...typing</div>)}
+          </div>
+          <div className="choices">
+            {choices && choices.length>0 ? choices.map(c=>(<button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>))
+              : (<div style={{fontSize:12,color:'var(--muted)'}}>No choices available yet — follow the messages</div>)}
+          </div>
+        </div>);
+      }
+
+      function ChapterEnd({onBack}){
+        return (<div className="center"><div className="panel">
+          <div style={{fontSize:22,fontWeight:700,marginBottom:6}}>Chapter 1 Complete</div>
+          <div style={{fontSize:14,color:'var(--muted)',marginBottom:14}}>Gallery unlocked: 1/3</div>
+          <div className="row">
+            <button className="primary" onClick={onBack}>Back to Home</button>
+            <button className="choice" disabled>Next Chapter (locked)</button>
+          </div>
+        </div></div>);
+      }
+
+      function App(){
+        const [playerName,setPlayerName]=useState('');
+        const [nameSet,setNameSet]=useState(false);
+        const [screen,setScreen]=useState('home');
+        const [currentScene,setCurrentScene]=useState('scene1');
+        const [chat,setChat]=useState([]);
+        const [typing,setTyping]=useState(false);
+        const [choices,setChoices]=useState([]);
+        const [ambientOn,setAmbientOn]=useState(false);
+
+        const audioCtxRef=useRef(null); const padNodesRef=useRef(null);
+        const startAmbient=()=>{ if(audioCtxRef.current) return; const AC=window.AudioContext||window.webkitAudioContext; const ctx=new AC(); audioCtxRef.current=ctx;
+          const gain=ctx.createGain(); gain.gain.value=0.0001; gain.connect(ctx.destination);
+          const o1=ctx.createOscillator(); o1.type='sine'; o1.frequency.value=220;
+          const o2=ctx.createOscillator(); o2.type='sine'; o2.frequency.value=330;
+          const og=ctx.createGain(); og.gain.value=0.0001; o1.connect(og); o2.connect(og); og.connect(gain);
+          const now=ctx.currentTime; gain.gain.setValueAtTime(0.0001,now); gain.gain.exponentialRampToValueAtTime(0.02,now+2);
+          o1.start(); o2.start(); padNodesRef.current={ctx,gain,o1,o2,og}; setAmbientOn(true); };
+        const stopAmbient=()=>{ const n=padNodesRef.current; if(!n) return; const {ctx,gain,o1,o2}=n; const t=ctx.currentTime;
+          gain.gain.exponentialRampToValueAtTime(0.0001,t+1.2); setTimeout(()=>{ try{o1.stop();o2.stop();}catch(e){} padNodesRef.current=null; audioCtxRef.current=null; },1300); setAmbientOn(false); };
+        const toggleAmbient=()=> ambientOn?stopAmbient():startAmbient();
+        const playPing=()=>{ const ctx=audioCtxRef.current; if(!ctx) return; const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=880; const g=ctx.createGain(); g.gain.value=0.0001; o.connect(g); g.connect(ctx.destination);
+          const t=ctx.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.02,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.5); o.start(); setTimeout(()=>{ try{o.stop();}catch(e){} },520); };
+
+        const openMessages=()=>{ setScreen('messages'); setTimeout(()=>runScene('scene1'),500); };
+        const append=(m)=> setChat(prev=>[...prev,m]);
+        const runScene=(sceneId)=>{ const sc=scenes[sceneId]; if(!sc) return; setCurrentScene(sceneId); setChat([]); append({from:sc.actor,text:sc.text,me:false}); playPing(); setTimeout(()=>setChoices(sc.choices),750); };
+        const choose=(choiceId)=>{ const sc=scenes[currentScene]; if(!sc) return; setChoices([]); const c=sc.choices.find(x=>x.id===choiceId); append({from:playerName||'You',text:c.text,me:true}); setTyping(true);
+          setTimeout(()=>{ setTyping(false); const replies=sc.replies[choiceId]||[]; replies.forEach((r,i)=> setTimeout(()=>{ append({from:r.from,text:r.text,me:false}); playPing(); }, 300*i+150));
+            setTimeout(()=>{ if(currentScene==='scene1') runScene('scene2'); else if(currentScene==='scene2') runScene('scene3'); else setScreen('end'); }, 800+replies.length*320); },800); };
+
+        return (<div className="stage">
+          <div className="phone">
+            <StatusBar/>
+            <div className="screen">
+              {screen==='home' && <Home onOpenMessages={openMessages}/>}
+              {screen==='messages' && <Messages
+                playerName={playerName} setPlayerName={setPlayerName}
+                nameSet={nameSet} setNameSet={setNameSet}
+                chat={chat} typing={typing} choices={choices} choose={choose}
+                onBack={()=>setScreen('home')} ambientOn={ambientOn} toggleAmbient={toggleAmbient}
+              />}
+              {screen==='end' && <ChapterEnd onBack={()=>setScreen('home')}/>}
+            </div>
+          </div>
+        </div>);
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App/>);
+    </script>
+  </body>
+</html>
