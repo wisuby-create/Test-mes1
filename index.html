@@ -3,67 +3,44 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>VN Demo — pastelowe tło + twarze bohaterów</title>
+<title>VN Phone — Avatary + Sceny + Kwiaty</title>
 <style>
-  :root{
-    --bg1:#ffeef7;--bg2:#d8efff;
-    --glass:rgba(255,255,255,.55);
-    --glass-strong:rgba(255,255,255,.75);
-    --ink:#111827;--muted:#6b7280;
-    --shadow:0 10px 30px rgba(0,0,0,.25)
-  }
-  *{box-sizing:border-box}
-  html,body,#root{height:100%;margin:0}
-  body{
-    background:#0f172a;
-    overflow:hidden;
-    font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
-    color:var(--ink)
-  }
+  :root{--bg1:#ffeef7;--bg2:#d8efff;--ink:#111827;--muted:#6b7280;--glass:rgba(255,255,255,.6);--shadow:0 10px 30px rgba(0,0,0,.25)}
+  *{box-sizing:border-box}html,body,#root{height:100%;margin:0}
+  body{background:#0f172a;overflow:hidden;font-family:Inter,ui-sans-serif,-apple-system,Segoe UI,Roboto;color:var(--ink)}
   .stage{height:100%;display:flex;align-items:center;justify-content:center}
-  .phone{
-    width:min(360px,calc(100vw - 16px));
-    height:min(780px,calc(100vh - 16px));
-    border-radius:28px;
-    background:#000;
-    border:4px solid #0b0f1a;
-    box-shadow:var(--shadow);
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-    position:relative
-  }
+  .phone{width:min(360px,calc(100vw - 16px));height:min(780px,calc(100vh - 16px));border-radius:28px;background:#000;border:4px solid #0b0f1a;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
   .status{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#0b1220;color:#fff}
-  .status-time{font-weight:600}.status-date{color:#9ca3af;font-size:12px}.status-icons{color:#9ca3af;font-size:12px;display:flex;gap:10px;align-items:center}
+  .status-time{font-weight:600}.status-date{color:#9ca3af;font-size:12px}.status-icons{color:#9ca3af;font-size:12px}
   .screen{position:relative;flex:1;background:linear-gradient(135deg,var(--bg1),var(--bg2));overflow:hidden}
-  /* pastelowe kwiaty w tle */
-  .screen::before{
-    content:"";
-    position:absolute;inset:0;
-    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" opacity="0.15"><g fill="%23fbb6ce"><circle cx="50" cy="60" r="25"/><circle cx="110" cy="120" r="15"/><circle cx="320" cy="90" r="20" fill="%23a5f3fc"/><circle cx="250" cy="250" r="30" fill="%23fde68a"/><circle cx="140" cy="300" r="18" fill="%23c4b5fd"/></g></svg>');
-    background-repeat:repeat;
-    background-size:200px 200px;
-    filter:blur(1px)
-  }
-
-  .home{padding:20px;height:100%;display:flex;flex-direction:column;position:relative;z-index:1}
+  .screen::before{content:"";position:absolute;inset:0;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" opacity="0.15"><g><circle cx="60" cy="70" r="26" fill="%23f8b4d9"/><circle cx="120" cy="120" r="16" fill="%23a5f3fc"/><circle cx="320" cy="90" r="22" fill="%23fde68a"/><circle cx="250" cy="250" r="32" fill="%23c4b5fd"/><circle cx="140" cy="300" r="18" fill="%23fb7185"/></g></svg>');background-size:200px 200px}
+  .home{position:relative;z-index:1;padding:20px;height:100%;display:flex;flex-direction:column}
   .grid{flex:1;display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start;justify-items:center}
-  .app{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer;text-align:center}
-  .app-icon{width:100px;height:100px;border-radius:999px;background:var(--glass-strong);display:grid;place-items:center;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.15);backdrop-filter:blur(6px)}
-  .app-icon img{width:100%;height:100%;object-fit:cover;border-radius:999px}
+  .app{position:relative;display:flex;flex-direction:column;align-items:center}
+  .app-icon{width:100px;height:100px;border-radius:999px;background:var(--glass);backdrop-filter:blur(6px);overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.15);display:grid;place-items:center}
+  .app-icon img{width:100%;height:100%;object-fit:cover}
   .badge{position:absolute;right:-4px;top:-4px;background:#ef4444;color:#fff;border-radius:999px;min-width:20px;height:20px;display:grid;place-items:center;font-size:12px;padding:0 6px;border:2px solid #fff}
-  .app-name{margin-top:8px;font-size:14px;color:#1f2937;font-weight:600;text-shadow:0 1px 2px rgba(255,255,255,.8)}
-  .home-hint{text-align:center;font-size:12px;color:#374151;margin-top:6px}
+  .app-name{margin-top:8px;font-size:14px;font-weight:600;color:#1f2937;text-shadow:0 1px 2px rgba(255,255,255,.9)}
+  .home-hint{text-align:center;font-size:12px;color:#374151}
 
-  .messages{height:100%;display:flex;flex-direction:column;z-index:1;position:relative;background:linear-gradient(135deg,var(--bg1),var(--bg2))}
-  .topbar{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.6);backdrop-filter:blur(6px)}
+  .messages{height:100%;display:flex;flex-direction:column;position:relative;z-index:1}
+  .topbar{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.65);backdrop-filter:blur(6px)}
   .btn{background:transparent;border:0;font-size:14px;color:#1f2937;cursor:pointer}
-  .btn-pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.6);backdrop-filter:blur(6px)}
   .list{padding:10px;display:flex;flex-direction:column;gap:10px;height:100%;overflow:auto}
-  .contact{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.7);border-radius:14px;padding:10px 12px;text-align:left;position:relative}
-  .avatar{width:40px;height:40px;border-radius:999px;overflow:hidden}
-  .avatar img{width:100%;height:100%;object-fit:cover;border-radius:999px}
-  .contact .name{font-weight:700}.contact .last{font-size:12px;color:var(--muted)}
+  .contact{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.8);border-radius:14px;padding:10px 12px;text-align:left;position:relative}
+  .avatar{width:40px;height:40px;border-radius:999px;overflow:hidden} .avatar img{width:100%;height:100%;object-fit:cover}
+  .name{font-weight:700}.last{font-size:12px;color:var(--muted)} .badge-row{position:absolute;right:8px;top:8px}
+
+  .chat{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;position:relative}
+  .rowmsg{display:flex;gap:8px;align-items:flex-start}
+  .avatar-small{width:28px;height:28px;border-radius:999px;overflow:hidden}
+  .bubble{max-width:76%;padding:9px 11px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+  .from-me{margin-left:auto;background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border-top-right-radius:6px}
+  .from-them{background:#fff;color:var(--ink);border-top-left-radius:6px;border:1px solid rgba(0,0,0,.06)}
+  .sender{font-size:11px;font-weight:700;margin-bottom:4px;opacity:.85}
+  .nextbar{padding:10px 12px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06);display:flex;justify-content:flex-end}
+  .choices{padding:10px 12px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06);display:grid;gap:8px}
+  .choice{padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#fff,#f5f8ff);border:1px solid rgba(0,0,0,.06);text-align:left;cursor:pointer}
 </style>
 </head>
 <body>
@@ -74,10 +51,10 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <script type="text/babel">
-const { useState } = React;
+const {useEffect,useRef,useState}=React;
 
-// proste "twarze" SVG jako obrazki postaci
-function avatar(name,color){
+/* proste portrety SVG jako data-URI */
+function face(name,color){
   return "data:image/svg+xml;utf8,"+encodeURIComponent(`
     <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
       <rect width='100%' height='100%' rx='100' fill='${color}'/>
@@ -85,73 +62,219 @@ function avatar(name,color){
       <circle cx='75' cy='95' r='10' fill='#333'/>
       <circle cx='125' cy='95' r='10' fill='#333'/>
       <path d='M70 130 Q100 145 130 130' stroke='#333' stroke-width='4' fill='none'/>
-      <text x='100' y='190' text-anchor='middle' font-size='20' fill='#fff' font-family='sans-serif'>${name}</text>
+      <text x='100' y='190' font-size='18' text-anchor='middle' fill='#fff' font-family='sans-serif'>${name}</text>
     </svg>
   `);
 }
-
 const portraits={
-  Maja:avatar("Maja","#f9a8d4"),
-  Riven:avatar("Riven","#93c5fd"),
-  Noah:avatar("Noah","#86efac"),
-  Victor:avatar("Victor","#c4b5fd"),
+  Maja:  face('Maja','#f9a8d4'),
+  Riven: face('Riven','#93c5fd'),
+  Noah:  face('Noah','#86efac'),
+  Victor:face('Victor','#c4b5fd'),
+};
+
+/* scenariusze (skrót — działa „Dalej ▶” + wybory) */
+const Scripts={
+  maja:{ start:{from:'Maja',text:'Hej! Zgadnij kto do mnie napisał 👀'},
+    choices:[{id:'m1',text:'No mów!'},
+             {id:'m2',text:'Tylko nie Riven…'},
+             {id:'m3',text:'Nie mam siły na dramy.'}],
+    replies:{
+      m1:[{from:'Maja',text:'Riven napisał do MNIE. Po czasie…'},{from:'Maja',text:'Czy on próbuje do ciebie przez mnie dotrzeć?'}],
+      m2:[{from:'Maja',text:'……właśnie on 😅'}],
+      m3:[{from:'Maja',text:'Udajesz, że nie ciekawi 😉'}],
+    }},
+  riven:{ start:{from:'Riven',text:'You still awake?'},
+    choices:[{id:'r1',text:"Nie spodziewałam się."},{id:'r2',text:'Nie śpię.'},{id:'r3',text:'(zignoruj)'}],
+    replies:{ r1:[{from:'Riven',text:'Ja też. Ale spróbowałem.'}],
+              r2:[{from:'Riven',text:'Zawsze zarywasz noce.'}],
+              r3:[{from:'Riven',text:'Zasłużyłem, wiem.'}],},
+  },
+  noah:{ start:{from:'Noah',text:'Hej! Maja dała mi twój numer, ok? 😅'},
+    choices:[{id:'n1',text:'Spoko, miło poznać!'},
+             {id:'n2',text:'Maja za dużo gada.'}],
+    replies:{ n1:[{from:'Noah',text:'Super! Robię dobrą kawę ☕️'}],
+              n2:[{from:'Noah',text:'Jest podekscytowana, obiecuję że jestem miły 😇'}],},
+  },
+  victor:{ start:{from:'Victor',text:'Dobry wieczór. Mam bilety na wystawę.'},
+    choices:[{id:'v1',text:'Kiedy?'},
+             {id:'v2',text:'Czy my się znamy?'}],
+    replies:{ v1:[{from:'Victor',text:'Piątek 19:00. Mogę towarzyszyć.'}],
+              v2:[{from:'Victor',text:'Biblioteka. Pomogłaś z skanerem.'}],},
+  },
+};
+
+/* kontakty */
+const CONTACTS=[
+  {id:'maja',name:'Maja',avatar:portraits.Maja},
+  {id:'riven',name:'Riven',avatar:portraits.Riven},
+  {id:'noah',name:'Noah',avatar:portraits.Noah},
+  {id:'victor',name:'Victor',avatar:portraits.Victor},
+];
+
+/* UI */
+function StatusBar(){
+  const [t,setT]=useState(new Date());
+  useEffect(()=>{const i=setInterval(()=>setT(new Date()),1000);return()=>clearInterval(i)},[]);
+  const time=t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const date=t.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
+  return(<div className="status"><div className="status-time">{time}</div><div className="status-date">{date}</div><div className="status-icons">🔋 92%</div></div>);
 }
 
-function App(){
-  const [screen,setScreen]=useState('home');
-  const unread=1;
-
+function Home({unreadTotal,onOpenMessages}){
   return(
-    <div className="stage">
-      <div className="phone">
-        <div className="status">
-          <div className="status-time">23:59</div>
-          <div className="status-date">pon, 6 paź</div>
-          <div className="status-icons">🔋92%</div>
+    <div className="screen">
+      <div className="home">
+        <div className="grid">
+          {CONTACTS.map(c=>(
+            <button key={c.id} className="app" onClick={onOpenMessages}>
+              <div className="app-icon"><img src={c.avatar} alt={c.name}/></div>
+              {c.id==='maja' && unreadTotal>0 && <div className="badge">{unreadTotal}</div>}
+              <div className="app-name">{c.name}</div>
+            </button>
+          ))}
         </div>
-
-        {screen==='home' && (
-          <div className="screen">
-            <div className="home">
-              <div className="grid">
-                {Object.entries(portraits).map(([name,src])=>(
-                  <div className="app" key={name} onClick={()=>setScreen('messages')}>
-                    <div className="app-icon"><img src={src} alt={name}/></div>
-                    {name==='Maja' && unread>0 && <div className="badge">{unread}</div>}
-                    <div className="app-name">{name}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="home-hint">Dotknij postać, aby otworzyć czat</div>
-            </div>
-          </div>
-        )}
-
-        {screen==='messages' && (
-          <div className="messages">
-            <div className="topbar">
-              <button className="btn" onClick={()=>setScreen('home')}>◀︎</button>
-              <div style={{fontWeight:600}}>Wiadomości</div>
-              <div style={{width:'36px'}}></div>
-            </div>
-            <div className="list">
-              {Object.entries(portraits).map(([name,src])=>(
-                <div key={name} className="contact">
-                  <div className="avatar"><img src={src} alt={name}/></div>
-                  <div>
-                    <div className="name">{name}</div>
-                    <div className="last">Hej! Zgadnij kto do mnie napisał 👀</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="home-hint">Dotknij, aby wejść do Wiadomości</div>
       </div>
     </div>
   );
 }
 
+function MessagesList({chats,unread,onOpenChat,onBack}){
+  const last=id=>{
+    const m=chats[id]?.messages||[];
+    return m.length?m[m.length-1].text:'Hej! Zgadnij kto do mnie napisał 👀';
+  };
+  return(
+    <div className="messages">
+      <div className="topbar">
+        <button className="btn" onClick={onBack}>◀︎</button>
+        <div style={{fontWeight:700}}>Wiadomości</div>
+        <div style={{width:32}}/>
+      </div>
+      <div className="list">
+        {CONTACTS.map(c=>(
+          <button key={c.id} className="contact" onClick={()=>onOpenChat(c.id)}>
+            <div className="avatar"><img src={c.avatar} alt={c.name}/></div>
+            <div><div className="name">{c.name}</div><div className="last">{last(c.id)}</div></div>
+            {(unread[c.id]||0)>0 && <div className="badge badge-row">{unread[c.id]}</div>}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChatView({contact,chat,queue,choices,next,choose,onBack}){
+  return(
+    <div className="messages">
+      <div className="topbar">
+        <button className="btn" onClick={onBack}>Back</button>
+        <div style={{fontWeight:700}}>{contact.name}</div>
+        <div className="avatar"><img src={contact.avatar} alt={contact.name}/></div>
+      </div>
+      <div className="chat">
+        {chat.map((m,i)=>(
+          <div key={i} className="rowmsg" style={{justifyContent:m.me?'flex-end':'flex-start'}}>
+            {!m.me && <div className="avatar-small"><img src={portraits[m.from]||portraits.Maja} alt={m.from}/></div>}
+            <div className={`bubble ${m.me?'from-me':'from-them'}`}>
+              <div className="sender">{m.me?'Ty':m.from}</div>
+              <div>{m.text}</div>
+            </div>
+            {m.me && <div className="avatar-small"><img src={portraits.Maja} alt="You"/></div>}
+          </div>
+        ))}
+      </div>
+      {queue.length>0
+        ? <div className="nextbar"><button className="choice" onClick={next}>Dalej ▶</button></div>
+        : <div className="choices">
+            {choices.length?choices.map(c=><button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>)
+            : <div style={{fontSize:12,color:'#6b7280'}}>Brak wyborów — poczekaj na wiadomość</div>}
+          </div>}
+    </div>
+  );
+}
+
+/* APP — przywraca postęp scen */
+function App(){
+  const [screen,setScreen]=useState('home');     // home | messages | chat
+  const [currentId,setCurrentId]=useState(null);
+  const [chats,setChats]=useState(()=>{
+    const o={}; for(const c of CONTACTS){ o[c.id]={messages:[],queue:[],choices:[],step:'idle'} } return o;
+  });
+  const [unread,setUnread]=useState({}); const unreadTotal=Object.values(unread).reduce((a,b)=>a+b,0);
+
+  const setChat=(id,fn)=>setChats(prev=>({...prev,[id]:fn(prev[id])}));
+
+  const runStart=(id)=>{
+    const sc=Scripts[id]; if(!sc) return;
+    setChat(id,c=>({...c,queue:[{from:sc.start.from,text:sc.start.text,me:false}],choices:[],step:'started'}));
+  };
+  const next=(id)=>{
+    setChat(id,c=>{
+      if(!c.queue.length) return c;
+      const [msg,...rest]=c.queue; const messages=[...c.messages,msg];
+      let choices=c.choices,step=c.step;
+      if(rest.length===0 && step==='started'){ choices=Scripts[id].choices||[]; step='await'; }
+      return {...c,messages,queue:rest,choices,step};
+    });
+  };
+  const choose=(id,choiceId)=>{
+    const sc=Scripts[id]; const pick=(sc.choices||[]).find(x=>x.id===choiceId);
+    setChat(id,c=>{
+      const messages=[...c.messages,{from:'Ty',text:pick.text,me:true}];
+      const queue=(sc.replies[choiceId]||[]).map(r=>({from:r.from,text:r.text,me:false}));
+      return {...c,messages,queue,choices:[],step:'replied'};
+    });
+  };
+
+  const openMessages=()=>{
+    setScreen('messages');
+    // jednorazowo zainicjuj Maję na liście (jeśli pusto)
+    setChats(prev=>{
+      if(prev.maja.messages.length===0 && prev.maja.queue.length===0){
+        const sc=Scripts.maja;
+        return {...prev,maja:{...prev.maja,queue:[{from:sc.start.from,text:sc.start.text,me:false}],step:'started'}};
+      }
+      return prev;
+    });
+    setUnread(u=>({...u,maja:1,...u}));
+  };
+
+  const openChat=(id)=>{
+    setCurrentId(id); setScreen('chat');
+    // start, jeśli pusto
+    setChats(prev=>{
+      const c=prev[id]; if(c.messages.length===0 && c.queue.length===0){ const sc=Scripts[id];
+        return {...prev,[id]:{...c,queue:[{from:sc.start.from,text:sc.start.text,me:false}],step:'started'}};
+      } return prev;
+    });
+    setUnread(u=>({...u,[id]:0}));
+  };
+
+  return(
+    <div className="stage">
+      <div className="phone">
+        <StatusBar/>
+        <div className="screen">
+          {screen==='home' && <Home unreadTotal={unreadTotal} onOpenMessages={openMessages}/>}
+          {screen==='messages' && <MessagesList chats={chats} unread={unread} onOpenChat={openChat} onBack={()=>setScreen('home')}/>}
+          {screen==='chat' && currentId && (
+            <ChatView
+              contact={CONTACTS.find(c=>c.id===currentId)}
+              chat={chats[currentId].messages}
+              queue={chats[currentId].queue}
+              choices={chats[currentId].choices}
+              next={()=>next(currentId)}
+              choose={(cid)=>choose(currentId,cid)}
+              onBack={()=>setScreen('messages')}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 const root=ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App/>);
 </script>
