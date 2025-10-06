@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>VN Phone — Start + Maja first + Powiadomienia + Dalej</title>
+<title>VN Phone — Maja → Riven, kwiaty, okrągłe ikony</title>
 <style>
   :root{
     --bg1:#ffeef7; --bg2:#d8efff; --ink:#111827; --muted:#6b7280;
-    --glass:rgba(255,255,255,.64); --shadow:0 10px 30px rgba(0,0,0,.25);
+    --glass:rgba(255,255,255,.65); --shadow:0 10px 30px rgba(0,0,0,.25);
     --blue:#60a5fa; --vio:#8b5cf6; --green:#34d399; --pink:#f472b6;
   }
-  *{box-sizing:border-box}
-  html,body,#root{height:100%;margin:0}
+  *{box-sizing:border-box} html,body,#root{height:100%;margin:0}
   body{background:#0f172a;overflow:hidden;font-family:Inter,ui-sans-serif,-apple-system,Segoe UI,Roboto;color:var(--ink)}
   .stage{height:100%;display:flex;align-items:center;justify-content:center}
   /* telefon */
@@ -23,30 +22,34 @@
   }
   .status{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#0b1220;color:#fff}
   .status-time{font-weight:600}.status-date{color:#9ca3af;font-size:12px}.status-icons{color:#9ca3af;font-size:12px}
-  .screen{position:relative;flex:1;background:linear-gradient(135deg,var(--bg1),var(--bg2));overflow:hidden}
-  /* pastelowe, kobiece kwiaty */
+
+  /* pastelowa kwiatowa tapeta */
+  .screen{position:relative;flex:1;overflow:hidden;background:linear-gradient(135deg,var(--bg1),var(--bg2))}
   .screen::before{
     content:"";position:absolute;inset:0;opacity:.22;
     background-image:url('data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600">\
-<defs><radialGradient id="p" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff0"/></radialGradient></defs>\
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="700">\
+<defs>\
+<radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#ffffff00"/></radialGradient>\
+</defs>\
 <g>\
-<circle cx="90" cy="90" r="46" fill="%23f8b4d9"/><circle cx="90" cy="90" r="24" fill="url(%23p)"/>\
-<circle cx="520" cy="120" r="40" fill="%23c4b5fd"/><circle cx="520" cy="120" r="20" fill="url(%23p)"/>\
-<circle cx="180" cy="290" r="36" fill="%23fde68a"/><circle cx="180" cy="290" r="18" fill="url(%23p)"/>\
-<circle cx="420" cy="360" r="48" fill="%23a7f3d0"/><circle cx="420" cy="360" r="24" fill="url(%23p)"/>\
-<circle cx="300" cy="520" r="34" fill="%23fbcfe8"/><circle cx="300" cy="520" r="17" fill="url(%23p)"/>\
-</g></svg>');
-    background-size:260px 260px; background-repeat:repeat
+<g opacity="0.95">\
+<circle cx="120" cy="120" r="54" fill="%23f8b4d9"/><circle cx="120" cy="120" r="28" fill="url(%23glow)"/>\
+<circle cx="560" cy="140" r="46" fill="%23c4b5fd"/><circle cx="560" cy="140" r="24" fill="url(%23glow)"/>\
+<circle cx="210" cy="320" r="42" fill="%23a7f3d0"/><circle cx="210" cy="320" r="22" fill="url(%23glow)"/>\
+<circle cx="430" cy="380" r="58" fill="%23fde68a"/><circle cx="430" cy="380" r="30" fill="url(%23glow)"/>\
+<circle cx="300" cy="560" r="44" fill="%23fbcfe8"/><circle cx="300" cy="560" r="22" fill="url(%23glow)"/>\
+</g></g></svg>');
+    background-size:280px 280px;background-repeat:repeat
   }
 
-  /* HOME */
-  .home{position:relative;z-index:1;padding:20px;height:100%;display:flex;flex-direction:column}
-  .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start;justify-items:center}
+  /* HOME: okrągłe bąbelki */
+  .home{position:relative;z-index:1;padding:18px;height:100%;display:flex;flex-direction:column}
+  .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start;justify-items:center}
   .app{position:relative;display:flex;flex-direction:column;align-items:center}
-  .app-icon{width:64px;height:64px;border-radius:16px;background:var(--glass);backdrop-filter:blur(6px);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12)}
-  .badge{position:absolute;right:-6px;top:-6px;background:#ef4444;color:#fff;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;font-size:11px;padding:0 6px;border:2px solid #fff}
+  .app-icon{width:68px;height:68px;border-radius:999px;background:var(--glass);backdrop-filter:blur(6px);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12);font-size:26px}
   .app-name{margin-top:6px;font-size:12px;font-weight:600;color:#1f2937}
+  .badge{position:absolute;right:-6px;top:-6px;background:#ef4444;color:#fff;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;font-size:11px;padding:0 6px;border:2px solid #fff}
   .home-hint{text-align:center;font-size:12px;color:#374151}
 
   /* LISTA KONTAKTÓW */
@@ -60,11 +63,11 @@
   /* avatar z inicjałem */
   .initial{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800}
   .i-maja{background:var(--pink)} .i-riven{background:var(--blue)} .i-noah{background:var(--green)} .i-victor{background:var(--vio)}
+  .initial-sm{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
 
   /* CZAT */
   .chat{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
   .rowmsg{display:flex;gap:8px;align-items:flex-start}
-  .initial-sm{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
   .bubble{max-width:76%;padding:9px 11px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
   .from-me{margin-left:auto;background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border-top-right-radius:6px}
   .from-them{background:#fff;color:var(--ink);border-top-left-radius:6px;border:1px solid rgba(0,0,0,.06)}
@@ -77,7 +80,6 @@
 <body>
 <div id="root"></div>
 
-<!-- React UMD + Babel -->
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -88,56 +90,35 @@ const { useEffect, useState } = React;
 /* ===== SCENARIUSZE ===== */
 const Scripts = {
   maja: {
-    start: { from:'Maja', text:'Hej! Zgadnij kto do mnie dziś napisał 👀' },
+    start: { from:'Maja', text:'Hej! Zgadnij, kto do mnie dziś napisał 👀' },
     choices: [
       {id:'m1', text:'No dawaj, mów!'},
       {id:'m2', text:'Proszę, nie mów że Riven…'},
-      {id:'m3', text:'Jestem zmęczona na dramy.'},
+      {id:'m3', text:'Nie mam siły na dramy.'},
     ],
     replies:{
-      m1:[{from:'Maja',text:'Riven. Napisał do MNIE. Po miesiącu ciszy.'},{from:'Maja',text:'On serio próbuje gadać z tobą przez mnie?'}],
-      m2:[{from:'Maja',text:'…niestety, tak 😅'}],
+      m1:[{from:'Maja',text:'Riven. Po miesiącu ciszy.'},{from:'Maja',text:'Czy on chce gadać z tobą przez mnie?'}],
+      m2:[{from:'Maja',text:'…niestety tak 😅'}],
       m3:[{from:'Maja',text:'Udajesz, że nie ciekawi 😉'}],
     }
   },
-  riven: {
-    start: { from:'Riven', text:'You still awake?' },
+  riven:{
+    start:{from:'Riven',text:'You still awake?'},
     choices:[
       {id:'r1',text:'Nie sądziłam, że napiszesz.'},
       {id:'r2',text:'Nie śpię.'},
       {id:'r3',text:'…(cisza)'},
     ],
     replies:{
-      r1:[{from:'Riven',text:'Ja też. A jednak napisałem.'}],
+      r1:[{from:'Riven',text:'A jednak napisałem.'}],
       r2:[{from:'Riven',text:'Zawsze zarywałaś noce.'}],
       r3:[{from:'Riven',text:'Zasłużyłem. Wiem.'}],
     }
   },
-  noah: {
-    start: { from:'Noah', text:'Hej! Maja dała mi Twój numer—mam nadzieję, że ok 😅' },
-    choices:[
-      {id:'n1',text:'Spoko, miło poznać!'},
-      {id:'n2',text:'Maja za dużo gada.'},
-    ],
-    replies:{
-      n1:[{from:'Noah',text:'Super! Robię świetną kawę ☕️'}],
-      n2:[{from:'Noah',text:'Jest podekscytowana. Obiecuję, jestem miły 😇'}],
-    }
-  },
-  victor: {
-    start:{ from:'Victor', text:'Dobry wieczór. Maja wspomniała, że lubisz sztukę.' },
-    choices:[
-      {id:'v1',text:'Tak. Co masz na myśli?'},
-      {id:'v2',text:'Czy my się znamy?'},
-    ],
-    replies:{
-      v1:[{from:'Victor',text:'Mam dwa bilety na piątek 19:00. Pójdziesz?'}],
-      v2:[{from:'Victor',text:'Biblioteka. Pomogłaś mi ze skanerem. Chciałem się odwdzięczyć.'}],
-    }
-  },
+  // (Noah, Victor na później — nie odblokowujemy ich jeszcze)
 };
 
-/* ===== KONTAKTY (początkowo tylko Maja odblokowana) ===== */
+/* ===== KONTAKTY ===== */
 const CONTACTS = [
   { id:'maja',   name:'Maja',   color:'i-maja',   initial:'M' },
   { id:'riven',  name:'Riven',  color:'i-riven',  initial:'R' },
@@ -145,7 +126,7 @@ const CONTACTS = [
   { id:'victor', name:'Victor', color:'i-victor', initial:'V' },
 ];
 
-/* ====== KOMPONENTY ====== */
+/* ===== KOMPONENTY ===== */
 function StatusBar(){
   const [t,setT]=useState(new Date());
   useEffect(()=>{const i=setInterval(()=>setT(new Date()),1000);return()=>clearInterval(i)},[]);
@@ -155,24 +136,16 @@ function StatusBar(){
 }
 
 function Home({ unreadTotal, openMessages }){
-  const apps = [
-    {name:'Messages', icon:'💬', onClick:openMessages, badge:unreadTotal},
-    {name:'Phone', icon:'📞'},
-    {name:'Gallery', icon:'🖼️'},
-    {name:'Clock', icon:'⏰'},
-    {name:'Settings', icon:'⚙️'},
-    {name:'Notes', icon:'📝'},
-    {name:'Music', icon:'🎵'},
-  ];
-  return (
+  const apps=[['Messages','💬',openMessages],['Phone','📞'],['Gallery','🖼️'],['Clock','⏰'],['Settings','⚙️'],['Notes','📝'],['Music','🎵']];
+  return(
     <div className="screen">
       <div className="home">
         <div className="grid">
-          {apps.map(a=>(
-            <button key={a.name} className="app" onClick={()=>a.onClick && a.onClick()}>
-              <div className="app-icon">{a.icon}</div>
-              {!!a.badge && <div className="badge">{a.badge}</div>}
-              <div className="app-name">{a.name}</div>
+          {apps.map(([name,icon,fn])=>(
+            <button key={name} className="app" onClick={()=>fn && fn()}>
+              <div className="app-icon">{icon}</div>
+              {name==='Messages' && unreadTotal>0 && <div className="badge">{unreadTotal}</div>}
+              <div className="app-name">{name}</div>
             </button>
           ))}
         </div>
@@ -187,10 +160,10 @@ function Initial({ cls, ch, small=false }){
 }
 
 function MessagesList({ unlocked, chats, unread, onOpenChat, onBack }){
-  const visible = CONTACTS.filter(c=>unlocked[c.id]);
+  const visible = Object.keys(unlocked).filter(id=>unlocked[id]).map(id=>CONTACTS.find(c=>c.id===id));
   const last = id => {
     const m = chats[id]?.messages||[];
-    return m.length? m[m.length-1].text : Scripts[id].start.text;
+    return m.length? m[m.length-1].text : Scripts[id]?.start?.text || '';
   };
   return (
     <div className="messages">
@@ -220,7 +193,6 @@ function ChatView({ contact, chat, queue, choices, next, choose, onBack }){
         <div style={{fontWeight:700}}>{contact.name}</div>
         <Initial cls={contact.color} ch={contact.initial}/>
       </div>
-
       <div className="chat">
         {chat.map((m,i)=>(
           <div key={i} className="rowmsg" style={{justifyContent:m.me?'flex-end':'flex-start'}}>
@@ -233,7 +205,6 @@ function ChatView({ contact, chat, queue, choices, next, choose, onBack }){
           </div>
         ))}
       </div>
-
       {queue.length>0
         ? <div className="nextbar"><button className="choice" onClick={next}>Dalej ▶</button></div>
         : <div className="choices">
@@ -245,71 +216,56 @@ function ChatView({ contact, chat, queue, choices, next, choose, onBack }){
   );
 }
 
-/* ====== APP (logika) ====== */
+/* ===== APP (logika progresu: Maja → Riven) ===== */
 function App(){
-  const [screen,setScreen]   = useState('home');            // 'home' | 'messages' | 'chat'
-  const [currentId,setCurrentId] = useState(null);
+  const [screen,setScreen]=useState('home');       // 'home' | 'messages' | 'chat'
+  const [currentId,setCurrentId]=useState(null);
 
-  // odblokowania – na start tylko Maja
-  const [unlocked,setUnlocked] = useState({maja:true, riven:false, noah:false, victor:false});
+  // odblokowania — start tylko Maja
+  const [unlocked,setUnlocked]=useState({maja:true,riven:false,noah:false,victor:false});
 
-  // czaty
-  const [chats,setChats] = useState(()=>{
-    const o={}; for (const c of CONTACTS){ o[c.id]={messages:[],queue:[],choices:[],step:'idle'} }
+  const [chats,setChats]=useState(()=>{
+    const o={}; ['maja','riven','noah','victor'].forEach(id=>o[id]={messages:[],queue:[],choices:[],step:'idle'});
     return o;
   });
-
-  // powiadomienia (badge)
-  const [unread,setUnread] = useState({});  // id -> liczba
+  const [unread,setUnread]=useState({});
   const unreadTotal = Object.values(unread).reduce((a,b)=>a+b,0);
 
-  const setChat=(id,updater)=>setChats(prev=>({...prev,[id]:updater(prev[id])}));
+  const setChat=(id,fn)=>setChats(prev=>({...prev,[id]:fn(prev[id])}));
+  const ensureStart=(id)=>setChats(prev=>{
+    const c=prev[id]; if(!Scripts[id]) return prev;
+    if(c.messages.length===0 && c.queue.length===0){
+      const s=Scripts[id].start;
+      return {...prev,[id]:{...c,queue:[{from:s.from,text:s.text,me:false}],step:'started'}};
+    } return prev;
+  });
 
-  // start rozmowy, jeśli pusto
-  const ensureStart = (id) => {
-    setChats(prev=>{
-      const c=prev[id];
-      if(c.messages.length===0 && c.queue.length===0){
-        const s=Scripts[id].start;
-        return {...prev,[id]:{...c,queue:[{from:s.from,text:s.text,me:false}],step:'started'}};
-      }
-      return prev;
-    });
-  };
+  const openMessages=()=>{ setScreen('messages'); ensureStart('maja'); setUnread(u=>({...u,maja:(u.maja||0)+1})) };
+  const openChat=(id)=>{ setCurrentId(id); setScreen('chat'); ensureStart(id); setUnread(u=>({...u,[id]:0})) };
 
-  // sterowanie
-  const openMessages = () => {
-    setScreen('messages');
-    // Maja pojawia się pierwsza
-    ensureStart('maja');
-    setUnread(u=>({...u, maja:(u.maja||0)+1}));
-    // „Powiadomienia” od chłopaków po chwili — powodują dołączenie do listy i badge
-    setTimeout(()=>{ if(!unlocked.riven){ setUnlocked(u=>({...u,riven:true})); ensureStart('riven'); setUnread(u=>({...u,riven:(u.riven||0)+1})); } }, 5000);
-    setTimeout(()=>{ if(!unlocked.noah){  setUnlocked(u=>({...u,noah:true}));  ensureStart('noah');  setUnread(u=>({...u,noah:(u.noah||0)+1})); } }, 9000);
-    setTimeout(()=>{ if(!unlocked.victor){setUnlocked(u=>({...u,victor:true}));ensureStart('victor');setUnread(u=>({...u,victor:(u.victor||0)+1}));} }, 13000);
-  };
-  const openChat = (id) => { setCurrentId(id); setScreen('chat'); ensureStart(id); setUnread(u=>({...u,[id]:0})); };
+  const next=(id)=>setChat(id,c=>{
+    if(!c.queue.length) return c;
+    const [msg,...rest]=c.queue; const messages=[...c.messages,msg];
+    let choices=c.choices, step=c.step;
+    if(rest.length===0 && step==='started'){ choices=Scripts[id].choices||[]; step='await'; }
+    return {...c,messages,queue:rest,choices,step};
+  });
 
-  // „Dalej”
-  const next = (id) => {
-    setChat(id, c=>{
-      if(!c.queue.length) return c;
-      const [msg,...rest]=c.queue;
-      const messages=[...c.messages,msg];
-      let choices=c.choices, step=c.step;
-      if(rest.length===0 && step==='started'){ choices=(Scripts[id].choices||[]); step='await'; }
-      return {...c,messages,queue:rest,choices,step};
-    });
-  };
-
-  // wybór
-  const choose = (id, choiceId) => {
-    const sc = Scripts[id]; const pick = (sc.choices||[]).find(x=>x.id===choiceId);
-    setChat(id, c=>{
+  const choose=(id,choiceId)=>{
+    const sc=Scripts[id]; const pick=(sc.choices||[]).find(x=>x.id===choiceId);
+    setChat(id,c=>{
       const messages=[...c.messages,{from:'Ty',text:pick.text,me:true}];
       const queue=(sc.replies[choiceId]||[]).map(r=>({from:r.from,text:r.text,me:false}));
       return {...c,messages,queue,choices:[],step:'replied'};
     });
+
+    // 🔓 PROGRES: po odpowiedzi Maji – odblokuj tylko Rivena (z powiadomieniem)
+    if(id==='maja' && !unlocked.riven){
+      setUnlocked(u=>({...u,riven:true}));
+      ensureStart('riven');
+      setUnread(u=>({...u,riven:(u.riven||0)+1}));
+    }
+    // (Noah/Victor nie są odblokowywani w tej wersji)
   };
 
   return (
@@ -318,13 +274,7 @@ function App(){
         <StatusBar/>
         <div className="screen">
           {screen==='home' && <Home unreadTotal={unreadTotal} openMessages={openMessages}/>}
-          {screen==='messages' && <MessagesList
-            unlocked={unlocked}
-            chats={chats}
-            unread={unread}
-            onOpenChat={openChat}
-            onBack={()=>setScreen('home')}
-          />}
+          {screen==='messages' && <MessagesList unlocked={unlocked} chats={chats} unread={unread} onOpenChat={openChat} onBack={()=>setScreen('home')}/>}
           {screen==='chat' && currentId && (
             <ChatView
               contact={CONTACTS.find(c=>c.id===currentId)}
