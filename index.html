@@ -1,30 +1,31 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>Heartline — Fundament</title>
+<title>Heartline — Chapter 1 + Gallery</title>
 <style>
   :root{
     --bg1:#ffeef7; --bg2:#d8efff; --ink:#111827; --muted:#6b7280;
     --glass:rgba(255,255,255,.65); --shadow:0 10px 30px rgba(0,0,0,.25);
-    --blue:#60a5fa; --vio:#8b5cf6; --green:#34d399; --pink:#f472b6; --primary:#ff7aa2;
+    --blue:#60a5fa; --vio:#8b5cf6; --green:#34d399; --pink:#f472b6; --primary:#ff7aa2; --primary2:#ff96b6;
   }
   *{box-sizing:border-box}
   html,body,#root{height:100%;margin:0}
   body{background:#0f172a;overflow:hidden;font-family:Inter,ui-sans-serif,-apple-system,Segoe UI,Roboto;color:var(--ink)}
   .stage{height:100%;display:flex;align-items:center;justify-content:center}
 
-  /* rama telefonu */
+  /* phone shell */
   .phone{
     width:min(360px,calc(100vw - 16px));
     height:min(780px,calc(100vh - 16px));
     border-radius:28px;background:#000;border:4px solid #0b0f1a;
     box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column
   }
-  .status{height:56px;display:flex;align-items:center;justify-content:center;padding:0 12px;background:#0b1220;color:#fff;font-weight:800}
+  .status{height:56px;display:flex;align-items:center;justify-content:center;padding:0 12px;background:#0b1220;color:#fff;font-weight:800;position:relative}
+  .reset{position:absolute;right:8px;top:8px;border:none;background:#1f2937;color:#fff;border-radius:10px;padding:6px 10px;font-weight:800;cursor:pointer}
 
-  /* wspólny kontener ekranów */
+  /* shared screen */
   .screen{position:relative;flex:1;overflow:hidden;background:linear-gradient(135deg,var(--bg1),var(--bg2))}
   .screen::before{
     content:"";position:absolute;inset:0;opacity:.22;
@@ -47,10 +48,10 @@
   .subtitle{color:#374151;margin-bottom:24px}
   .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .btn{border:0;border-radius:999px;padding:12px 20px;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.12)}
-  .btn.primary{background:linear-gradient(135deg,var(--primary),#ff96b6);color:#fff}
+  .btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}
   .btn.ghost{background:rgba(255,255,255,.85);color:#0f172a}
 
-  /* NAME SCREEN */
+  /* NAME */
   .card{background:rgba(255,255,255,.85);backdrop-filter:blur(6px);border-radius:18px;padding:18px;box-shadow:var(--shadow);width:90%;max-width:320px}
   .card label{display:block;font-weight:800;margin-bottom:6px}
   .card input{width:100%;padding:12px;border-radius:12px;border:1px solid #d1d5db;font-size:16px}
@@ -62,6 +63,37 @@
   .app{position:relative;display:flex;flex-direction:column;align-items:center}
   .app-icon{width:68px;height:68px;border-radius:999px;background:var(--glass);backdrop-filter:blur(6px);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12);font-size:28px}
   .app-name{margin-top:6px;font-size:12px;font-weight:700;color:#1f2937}
+  .badge{position:absolute;right:-6px;top:-6px;background:#ef4444;color:#fff;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;font-size:11px;padding:0 6px;border:2px solid #fff}
+  .notif{position:absolute;left:16px;right:16px;bottom:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border-radius:16px;padding:10px 12px;box-shadow:var(--shadow);display:none;z-index:3}
+  .notif strong{font-weight:800}
+
+  /* MESSAGES */
+  .messages{height:100%;display:flex;flex-direction:column;position:relative;z-index:1}
+  .topbar{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.65);backdrop-filter:blur(6px)}
+  .back{border:0;background:#e5e7eb;border-radius:10px;padding:6px 10px;font-weight:800;cursor:pointer}
+  .list{padding:10px;display:flex;flex-direction:column;gap:10px;height:100%;overflow:auto}
+  .contact{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.88);border-radius:14px;padding:10px 12px;text-align:left;position:relative;border:0;cursor:pointer}
+  .name{font-weight:700}.last{font-size:12px;color:var(--muted)} .badge-row{position:absolute;right:8px;top:8px}
+  .initial{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800}
+  .i-maya{background:var(--pink)} .i-riven{background:var(--blue)} .i-noah{background:var(--green)} .i-victor{background:var(--vio)}
+  .initial-sm{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
+
+  /* CHAT */
+  .chat{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+  .rowmsg{display:flex;gap:8px;align-items:flex-start}
+  .bubble{max-width:76%;padding:9px 11px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+  .from-me{margin-left:auto;background:linear-gradient(135deg,#60a5fa,#4f46e5);color:#fff;border-top-right-radius:6px}
+  .from-them{background:#fff;color:var(--ink);border-top-left-radius:6px;border:1px solid rgba(0,0,0,.06)}
+  .sender{font-size:11px;font-weight:700;margin-bottom:4px;opacity:.85}
+  .choices{padding:10px 12px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06)}
+  .choice{width:100%;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#fff,#f5f8ff);border:1px solid rgba(0,0,0,.06);text-align:left;cursor:pointer;margin:6px 0;font-weight:700}
+
+  /* GALLERY */
+  .gallery{height:100%;display:flex;flex-direction:column}
+  .grid-cg{padding:12px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;overflow:auto}
+  .cg{aspect-ratio:4/3;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);position:relative;border:0}
+  .cg img{width:100%;height:100%;object-fit:cover;display:block}
+  .cg.locked::after{content:"Locked";position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.35);color:#fff;font-weight:900;letter-spacing:.05em}
 </style>
 </head>
 <body>
@@ -75,10 +107,136 @@
 <script type="text/babel">
 const { useState, useEffect } = React;
 
-function StatusBar(){ return <div className="status">Heartline</div>; }
+/* =================== CONTACTS =================== */
+const CONTACTS = [
+  { id:'maya',   name:'Maya',   color:'i-maya',   initial:'M' },
+  { id:'riven',  name:'Riven',  color:'i-riven',  initial:'R' },
+  { id:'noah',   name:'Noah',   color:'i-noah',   initial:'N' },
+  { id:'victor', name:'Victor', color:'i-victor', initial:'V' },
+];
 
-/* ===== EKRANY ===== */
-function StartScreen({onStart,onReset}){
+/* =================== STORY (CH1 extended) =================== */
+const Story = {
+  boot(api){
+    api.unlock('maya');
+    api.notify({contact:'maya', preview:'Hey! You won’t believe who just texted me...'});
+  },
+  getScript(api, who){
+    if(who==='maya'){
+      return [
+        { from:'Maya', text:'Hey {name}! You won’t believe who just texted me…' },
+        { choice:[
+          { text:'Who?', then:[
+            { from:'Maya', text:'Riven. He texted ME instead of you.' },
+            { from:'Maya', text:"Should I give him your contact?" },
+            { choice:[
+              { text:'Okay, give it to him.',
+                sys:'unlock', payload:'riven',
+                then:[
+                  { sys:'notify', payload:{contact:'riven', preview:'…Is this {name}?'} },
+                  { from:'Maya', text:'Done. Don’t freak out 😅' }
+                ]
+              },
+              { text:'No. Please don’t.', then:[
+                { from:'Maya', text:'Alright. Your call. (But I warned you!)' }
+              ]},
+            ] }
+          ]},
+          { text:'Busy now. Later?', then:[
+            { from:'Maya', text:'Fine! But text me later, promise.' }
+          ]},
+        ] },
+
+        // === AFTER RIVEN CHAT: MAYA follow-up unlocks NOAH teaser ===
+        { sys:'hook', payload:(api)=>api.on('afterChat:riven', ()=>{
+          api.unlock('noah');
+          api.notify({contact:'noah', preview:'Hey! Maya gave me your number—hope that’s okay.'});
+        })},
+
+        // === CH1 ending teaser: MAYA mentions Victor; unlock and notify ===
+        { sys:'hook', payload:(api)=>api.on('chapter:end', ()=>{
+          api.unlock('victor');
+          api.notify({contact:'victor', preview:'We need to talk. Discretion appreciated.'});
+        })}
+      ];
+    }
+
+    if(who==='riven'){
+      return [
+        { from:'Riven', text:'…Is this {name}?' },
+        { choice:[
+          { text:"Yeah. Didn't expect you to text.", then:[
+            { from:'Riven', text:'Didn’t expect Maya to actually send your contact.' },
+            { from:'Riven', text:'Do you ever think about… that night?' },
+            { choice:[
+              { text:'I try not to.', then:[
+                { from:'Riven', text:"I get it. I can't stop." },
+                { sys:'cg', payload:'riven_cg_1' }, // unlock CG #1 (Riven)
+                { sys:'flag', payload:'riven_calm' }
+              ]},
+              { text:'Every day.',   then:[
+                { from:'Riven', text:'Same.' },
+                { sys:'cg', payload:'riven_cg_1' }
+              ]},
+              { text:'Delete my number.', then:[
+                { from:'Riven', text:'…Got it.' },
+                { sys:'flag', payload:'riven_harsh' }
+              ]},
+            ] }
+          ]},
+          { text:'Who’s asking?', then:[
+            { from:'Riven', text:'Heh. Fair.' },
+          ]},
+        ] },
+
+        // mark chat end for hook
+        { sys:'event', payload:'afterChat:riven' }
+      ];
+    }
+
+    if(who==='noah'){
+      return [
+        { from:'Noah', text:'Hi {name}! I’m Noah—Maya said we’d vibe.' },
+        { choice:[
+          { text:'She talks too much 😅', then:[ { from:'Noah', text:'Haha, guilty.' } ]},
+          { text:'Nice to meet you.', then:[ { from:'Noah', text:'You too!'} ]},
+        ]},
+      ];
+    }
+
+    if(who==='victor'){
+      return [
+        { from:'Victor', text:'Discretion suits you. Meet me tomorrow.' },
+        { choice:[
+          { text:'That’s… not creepy at all.', then:[ { from:'Victor', text:'It’s efficient.' } ]},
+          { text:'Why me?', then:[ { from:'Victor', text:'Because you notice things.' } ]},
+        ]},
+        { sys:'event', payload:'chapter:end' } // end of CH1 teaser
+      ];
+    }
+
+    return [];
+  }
+};
+
+/* =================== SIMPLE EVENT BUS (for hooks) =================== */
+const EventBus = (()=> {
+  const handlers = {};
+  return {
+    on(evt, fn){ (handlers[evt] ||= []).push(fn); },
+    emit(evt){ (handlers[evt]||[]).forEach(fn=>fn()); }
+  };
+})();
+
+/* =================== UI WIDGETS =================== */
+function StatusBar({onReset}){ return (
+  <div className="status">
+    Heartline
+    <button className="reset" onClick={onReset}>⟲ Reset</button>
+  </div>
+); }
+
+function StartScreen({onStart, onReset}){
   return (
     <div className="screen">
       <div className="wrap">
@@ -95,12 +253,12 @@ function StartScreen({onStart,onReset}){
 
 function NameScreen({onConfirm}){
   const [name,setName]=useState('');
-  useEffect(()=>{ setTimeout(()=>{ const el=document.getElementById('nameInput'); el&&el.focus(); },50); },[]);
+  useEffect(()=>{ setTimeout(()=>document.getElementById('nameInput')?.focus(),60); },[]);
   return (
     <div className="screen">
       <div className="wrap" style={{justifyContent:'center'}}>
         <div className="card">
-          <label htmlFor="nameInput">Wpisz swoją nazwę użytkownika</label>
+          <label htmlFor="nameInput">Enter your name</label>
           <input id="nameInput" value={name} onChange={e=>setName(e.target.value)} placeholder="Your name…" maxLength={16}/>
           <div className="row">
             <button className="btn primary" onClick={()=>onConfirm(name.trim()||'Player')}>OK</button>
@@ -111,11 +269,11 @@ function NameScreen({onConfirm}){
   );
 }
 
-function HomeScreen({playerName}){
+function HomeScreen({playerName, unreadTotal, openMessages, openGallery}){
   const apps=[
-    {name:'Messages', icon:'💬'},
+    {name:'Messages', icon:'💬', onClick:openMessages},
+    {name:'Gallery',  icon:'🖼️', onClick:openGallery},
     {name:'Phone',    icon:'📞'},
-    {name:'Gallery',  icon:'🖼️'},
     {name:'Clock',    icon:'⏰'},
     {name:'Notes',    icon:'📝'},
     {name:'Settings', icon:'⚙️'},
@@ -130,53 +288,243 @@ function HomeScreen({playerName}){
         <div className="home-inner">
           <div className="grid">
             {apps.map(a=>(
-              <div key={a.name} className="app" title={a.name}>
+              <button key={a.name} className="app" onClick={a.onClick}>
                 <div className="app-icon">{a.icon}</div>
+                {a.name==='Messages' && unreadTotal>0 && <div className="badge">{unreadTotal}</div>}
                 <div className="app-name">{a.name}</div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
-        <div style={{marginTop:'auto',fontSize:12,color:'#374151'}}>To tylko fundament — czaty i fabułę dodamy osobno.</div>
+        <div className="notif" id="homeNotif"></div>
       </div>
     </div>
   );
 }
 
-/* ===== APP (logika ekranu) ===== */
+function MessagesList({ unlocked, threads, unread, onOpenChat, onBack }){
+  const visibleIds = CONTACTS.map(c=>c.id).filter(id=>unlocked[id]);
+  const last = id => {
+    const m = threads[id]||[];
+    return m.length? m[m.length-1].text : (id==='maya' ? 'Hey! You won’t believe…' : id==='riven' ? '…Is this {name}?' : 'Say hi!');
+  };
+  return (
+    <div className="screen">
+      <div className="messages">
+        <div className="topbar">
+          <button className="back" onClick={onBack}>◀︎</button>
+          <div style={{fontWeight:800}}>Messages</div>
+          <div style={{width:32}}/>
+        </div>
+        <div className="list">
+          {visibleIds.map(id=>{
+            const c = CONTACTS.find(x=>x.id===id);
+            return (
+              <button key={id} className="contact" onClick={()=>onOpenChat(id)}>
+                <div className={"initial "+c.color}>{c.initial}</div>
+                <div><div className="name">{c.name}</div><div className="last">{last(id)}</div></div>
+                {(unread[id]||0)>0 && <div className="badge badge-row">{unread[id]}</div>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ChatView({ contactId, playerName, threads, setThreads, onBack, onEvent }){
+  const contact = CONTACTS.find(c=>c.id===contactId);
+  const msgs = threads[contactId]||[];
+  const [queue,setQueue]=useState([]);
+  const [choices,setChoices]=useState([]);
+
+  useEffect(()=>{
+    const seq = Story.getScript(HeartlineAPI, contactId) || [];
+    const q = [];
+    seq.forEach(n=>{
+      if(n.from) q.push({type:'msg',...n});
+      if(n.choice) q.push({type:'choice', items:n.choice});
+      if(n.sys){
+        // story "command" nodes are queued as actions
+        q.push({type:'sys', cmd:n.sys, payload:n.payload});
+      }
+    });
+    setQueue(q);
+    step(q);
+    // eslint-disable-next-line
+  },[contactId]);
+
+  function step(q){
+    if(!q.length) return;
+    const n=q.shift();
+    if(n.type==='msg'){
+      pushMsg(n.from, n.text);
+      setTimeout(()=>step(q), 120);
+    } else if(n.type==='choice'){
+      setChoices(n.items);
+      setQueue(q);
+    } else if(n.type==='sys'){
+      HeartlineAPI._sys(n.cmd, n.payload);
+      setTimeout(()=>step(q), 50);
+    }
+  }
+  function pushMsg(from,text,me=false){
+    setThreads(prev=>{
+      const cur = prev[contactId]||[];
+      return {...prev, [contactId]: [...cur, {from, text:text.replaceAll('{name}', playerName||'You'), me}]};
+    });
+  }
+  function choose(item){
+    pushMsg('You', item.text, true);
+    setChoices([]);
+    const q=[...queue];
+    (item.then||[]).slice().reverse().forEach(n=>{
+      if(n.from) q.unshift({type:'msg',...n});
+      if(n.choice) q.unshift({type:'choice', items:n.choice});
+      if(n.sys) q.unshift({type:'sys', cmd:n.sys, payload:n.payload});
+    });
+    setQueue(q);
+    step(q);
+    if(item.sys) HeartlineAPI._sys(item.sys,item.payload);
+  }
+
+  // emit end events to hooks
+  useEffect(()=>{
+    return ()=>{ // on unmount (leaving chat)
+      if(contactId==='riven') EventBus.emit('afterChat:riven');
+      if(contactId==='victor') EventBus.emit('chapter:end');
+    };
+  },[contactId]);
+
+  return (
+    <div className="screen">
+      <div className="messages">
+        <div className="topbar">
+          <button className="back" onClick={onBack}>Back</button>
+          <div style={{fontWeight:800}}>{contact.name}</div>
+          <div className={"initial "+contact.color}>{contact.initial}</div>
+        </div>
+        <div className="chat">
+          {msgs.map((m,i)=>(
+            <div key={i} className="rowmsg" style={{justifyContent:m.me?'flex-end':'flex-start'}}>
+              {!m.me && <div className={"initial-sm "+(CONTACTS.find(x=>x.name===m.from)||contact).color}>{(m.from||'?')[0]}</div>}
+              <div className={`bubble ${m.me?'from-me':'from-them'}`}>
+                <div className="sender">{m.me?'You':m.from}</div>
+                <div>{m.text}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {choices.length>0 &&
+          <div className="choices">
+            {choices.map((c,ix)=><button key={ix} className="choice" onClick={()=>choose(c)}>{c.text}</button>)}
+          </div>
+        }
+      </div>
+    </div>
+  );
+}
+
+/* =============== GALLERY (CG UNLOCKS) =============== */
+function GalleryScreen({ cg, onBack }){
+  const items = [
+    { id:'riven_cg_1', title:'Riven — Reflection', src:'assets/cg_riven_1.jpg' },
+    { id:'noah_cg_1',  title:'Noah — Warm Smile',  src:'assets/cg_noah_1.jpg' },
+    { id:'victor_cg_1',title:'Victor — In Shadow', src:'assets/cg_victor_1.jpg' },
+  ];
+  return (
+    <div className="screen">
+      <div className="messages">
+        <div className="topbar">
+          <button className="back" onClick={onBack}>◀︎</button>
+          <div style={{fontWeight:800}}>Gallery</div>
+          <div style={{width:32}}/>
+        </div>
+        <div className="grid-cg">
+          {items.map(it=>{
+            const unlocked = !!cg[it.id];
+            return (
+              <div key={it.id} className={"cg"+(unlocked?'':' locked')} title={it.title}>
+                {unlocked
+                  ? <img src={it.src} alt={it.title}/>
+                  : <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23e5e7eb'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-family='Arial' font-size='18'>Locked</text></svg>"/>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =================== APP =================== */
 function App(){
-  const LS='HL_BASE_V1';
-  const [playerName,setPlayerName]=useState(()=>{
-    try{ return JSON.parse(localStorage.getItem(LS)||'{}').playerName || ''; }catch{ return ''; }
-  });
+  const LS='HL_BASE_V4';
+  const [playerName,setPlayerName]=useState(()=>{ try{ return JSON.parse(localStorage.getItem(LS)||'{}').playerName||'' }catch{ return '' }});
   const [screen,setScreen]=useState(playerName? 'home':'start');
+  const [unlocked,setUnlocked]=useState(()=>({maya:true,riven:false,noah:false,victor:false}));
+  const [unread,setUnread]=useState(()=>({})); // id: count
+  const [threads,setThreads]=useState(()=>({maya:[],riven:[],noah:[],victor:[]}));
+  const [cg,setCg]=useState(()=>({})); // cgId: true
+  const [current,setCurrent]=useState(null);
+  const unreadTotal = Object.values(unread).reduce((a,b)=>a+b,0);
+
+  // ------------ Story API ------------
+  window.HeartlineAPI = {
+    state: ()=>({ playerName, unlocked, threads, unread, cg }),
+    save: ()=>localStorage.setItem(LS, JSON.stringify({playerName, cg})),
+    unlock: (id)=>setUnlocked(u=>({...u,[id]:true})),
+    notify: ({contact, preview})=>{
+      setUnread(u=>({...u,[contact]:(u[contact]||0)+1}));
+      const bar = document.getElementById('homeNotif');
+      if(bar){ bar.innerHTML = `<strong>New message from ${CONTACTS.find(c=>c.id===contact)?.name||contact}</strong> — ${preview||''}`; bar.style.display='block'; bar.onclick=()=>setScreen('messages'); }
+    },
+    cg: (id)=>{ setCg(prev=>{ const nx={...prev,[id]:true}; localStorage.setItem(LS, JSON.stringify({playerName, cg:nx})); return nx; }); },
+    flag: (k)=>localStorage.setItem('HL_FLAG_'+k,'1'),
+    on: (evt, fn)=>EventBus.on(evt, fn),
+    _sys: (cmd,payload)=>{ if(cmd==='unlock') HeartlineAPI.unlock(payload);
+                           if(cmd==='notify') HeartlineAPI.notify(payload);
+                           if(cmd==='cg') HeartlineAPI.cg(payload);
+                           if(cmd==='flag') HeartlineAPI.flag(payload);
+                           if(cmd==='event') EventBus.emit(payload);
+                           if(cmd==='hook')  payload && typeof payload==='function' ? payload(HeartlineAPI): null; }
+  };
 
   function saveName(name){
     setPlayerName(name);
-    localStorage.setItem(LS, JSON.stringify({playerName:name}));
+    localStorage.setItem(LS, JSON.stringify({playerName:name, cg}));
   }
   function hardReset(){
     localStorage.removeItem(LS);
-    setPlayerName('');
-    setScreen('start');
+    Object.keys(localStorage).forEach(k=>{ if(k.startsWith('HL_FLAG_')) localStorage.removeItem(k); });
+    setPlayerName(''); setScreen('start');
+    setUnlocked({maya:true,riven:false,noah:false,victor:false});
+    setUnread({}); setThreads({maya:[],riven:[],noah:[],victor:[]}); setCurrent(null);
+    setCg({});
   }
+
+  // start/name/home flow
+  const handleStart = ()=> setScreen('name');
+  const handleNameConfirm = (nm)=>{
+    saveName(nm); setScreen('home');
+    Story.boot(HeartlineAPI);
+  };
+
+  const openMessages = ()=> setScreen('messages');
+  const openChat = (id)=>{ setScreen('chat'); setCurrent(id); setUnread(u=>({...u,[id]:0})); };
+  const openGallery = ()=> setScreen('gallery');
 
   return (
     <div className="stage">
       <div className="phone">
-        <StatusBar/>
-        {screen==='start' && (
-          <StartScreen
-            onStart={()=>setScreen('name')}
-            onReset={hardReset}
-          />
-        )}
-        {screen==='name' && (
-          <NameScreen
-            onConfirm={(nm)=>{ saveName(nm); setScreen('home'); }}
-          />
-        )}
-        {screen==='home' && <HomeScreen playerName={playerName}/>}
+        <StatusBar onReset={hardReset}/>
+        {screen==='start'   && <StartScreen onStart={handleStart} onReset={hardReset}/>}
+        {screen==='name'    && <NameScreen onConfirm={handleNameConfirm}/>}
+        {screen==='home'    && <HomeScreen playerName={playerName} unreadTotal={unreadTotal} openMessages={openMessages} openGallery={openGallery}/>}
+        {screen==='messages'&& <MessagesList unlocked={unlocked} threads={threads} unread={unread} onOpenChat={openChat} onBack={()=>setScreen('home')}/>}
+        {screen==='chat'    && current && <ChatView contactId={current} playerName={playerName} threads={threads} setThreads={setThreads} onBack={()=>setScreen('messages')}/>}
+        {screen==='gallery' && <GalleryScreen cg={cg} onBack={()=>setScreen('home')}/>}
       </div>
     </div>
   );
