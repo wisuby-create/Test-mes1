@@ -74,341 +74,72 @@
 <body>
 <div id="root"></div>
 
-<!-- React UMD + Babel -->
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <script type="text/babel">
-/* ================== STATE & SAVE ================== */
-const SAVEKEY='HL_SAVE_V2';
+const {useState,useEffect}=React;
 
-function baseChat(){
-  return {messages:[], queue:[], choices:[], step:'idle', seeded:false, started:false};
-}
-
+function baseChat(){return{messages:[],queue:[],choices:[],step:'idle',seeded:false,started:false};}
 function makeState(){
-  const st = {
-    screen: 'home',           // 'home' | 'messages' | 'chat'
-    current: null,            // contact id
-    playerName: 'Player',
-    unlocked: { maja:true, riven:false, noah:false, victor:false },
-    unread:   { maja:0, riven:0, noah:0, victor:0 },
-    flags: {},                // chapter flags
-    rel: { riven:0, noah:0, victor:0 },
-    chats: {
-      maja:   baseChat(),
-      riven:  baseChat(),
-      noah:   baseChat(),
-      victor: baseChat(),
-    }
-  };
-  return st;
+ return{screen:'home',current:null,playerName:'Player',
+ unlocked:{maja:true,riven:false,noah:false,victor:false},
+ unread:{},flags:{},rel:{},chats:{maja:baseChat(),riven:baseChat(),noah:baseChat(),victor:baseChat()}};
 }
+const SAVEKEY='HL_SAVE'; let ST=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||makeState();
+function save(){localStorage.setItem(SAVEKEY,JSON.stringify(ST));}
+function reset(){localStorage.removeItem(SAVEKEY);location.reload();}
 
-function load(){
-  try{ const raw=localStorage.getItem(SAVEKEY); if(raw){ return JSON.parse(raw); } }catch{}
-  return makeState();
-}
-function save(){ localStorage.setItem(SAVEKEY, JSON.stringify(ST)); }
+const CONTACTS=[{id:'maja',name:'Maya',color:'i-maja',initial:'M'},
+{id:'riven',name:'Riven',color:'i-riven',initial:'R'},
+{id:'noah',name:'Noah',color:'i-noah',initial:'N'},
+{id:'victor',name:'Victor',color:'i-victor',initial:'V'}];
 
-/* global state */
-let ST = load();
+const Scripts={
+maja:{start:{from:'Maya',text:'Hey! Guess who texted me today 👀'},
+choices:[{id:'m1',text:"Don't keep me in suspense!"},{id:'m2',text:"Please don't say Riven…"},{id:'m3',text:"Not in the mood, Maya."}],
+replies:{m1:[{from:'Maya',text:'Riven. He texted ME instead of you.'},{from:'Maya',text:"What is he even doing? 😤"}],
+m2:[{from:'Maya',text:'…yeah. Sorry 😅'},{from:'Maya',text:'He asked if you were still mad.'}],
+m3:[{from:'Maya',text:'Uh-huh. And yet you’re reading this 👀'},{from:'Maya',text:'You always want to know, [MC].'}]},
+effects:{m1:[{unlock:'riven'}],m2:[{unlock:'riven'}],m3:[{unlock:'riven'}]}},
+riven:{start:{from:'Riven',text:'You still awake?'},choices:[{id:'r1',text:"Didn't expect to hear from you."},
+{id:'r2',text:"I don't sleep much lately."},{id:'r3',text:"(Don’t reply)"}],
+replies:{r1:[{from:'Riven',text:"Me neither. Guess we're both bad at letting go."},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+r2:[{from:'Riven',text:'Figures. You used to text me at 2AM just to send memes.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+r3:[{from:'Riven',text:'…yeah. I probably deserve the silence.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}]},
+followupChoices:[{id:'rfx1',text:'I try not to.'},{id:'rfx2',text:'Every day.'},{id:'rfx3',text:'Delete my number, Riven.'}],
+followupReplies:{rfx1:[{from:'Riven',text:"I get that. Still, I can't stop."}],
+rfx2:[{from:'Riven',text:'Same. It messes with my head.'}],
+rfx3:[{from:'Riven',text:'Got it. (…Still sorry.)'}]},
+effects:{r1:[{rel:{riven:+1}}],r2:[{rel:{riven:+1}}],r3:[{rel:{riven:-1}}],
+rfx1:[{rel:{riven:+1}}],rfx2:[{rel:{riven:+1}}],rfx3:[{rel:{riven:-1}}]}}};
 
-/* ================== SCRIPTS ================== */
-function scriptsFor(){
-  // Chapter 1 (Maya -> then Riven)
-  const CH1 = {
-    maja:{
-      start:{from:'Maya',text:'Hey! Guess who texted me just now? 👀'},
-      choices:[
-        {id:'m1',text:"Tell me already!"},
-        {id:'m2',text:"Let me guess… Riven?"},
-        {id:'m3',text:"You’re glowing, Maya 😉"},
-      ],
-      replies:{
-        m1:[{from:'Maya',text:'Riven. He texted ME instead of you.'},{from:'Maya',text:'What is he even doing? 😤'}],
-        m2:[{from:'Maya',text:'…yeah. Sorry 😅'},{from:'Maya',text:'He asked if you were still mad.'}],
-        m3:[{from:'Maya',text:'Haha, stop. But yes—Riven texted.'}],
-      },
-      effects:{ // any choice unlocks Riven
-        m1:[{unlock:'riven'}],
-        m2:[{unlock:'riven'}],
-        m3:[{unlock:'riven'}],
-      }
-    },
-    riven:{
-      start:{from:'Riven',text:'You still awake?'},
-      choices:[
-        {id:'r1',text:"Didn’t expect to hear from you."},
-        {id:'r2',text:"I don’t sleep much lately."},
-        {id:'r3',text:"(Don’t reply)"},
-      ],
-      replies:{
-        r1:[{from:'Riven',text:"Me neither. Guess we're both bad at letting go."},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
-        r2:[{from:'Riven',text:'Figures. You used to text me at 2AM just to send memes.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
-        r3:[{from:'Riven',text:'…yeah. I probably deserve the silence.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
-      },
-      followupChoices:[
-        {id:'rfx1',text:'I try not to.'},
-        {id:'rfx2',text:'Every day.'},
-        {id:'rfx3',text:'Delete my number, Riven.'},
-      ],
-      followupReplies:{
-        rfx1:[{from:'Riven',text:"I get that. Still, I can't stop."}],
-        rfx2:[{from:'Riven',text:'Same. It messes with my head.'}],
-        rfx3:[{from:'Riven',text:'Got it. (…Still sorry.)'}],
-      },
-      effects:{
-        r1:[{rel:{riven:+1}}],
-        r2:[{rel:{riven:+1}}],
-        r3:[{rel:{riven:-1}}],
-        rfx1:[{rel:{riven:+1}}],
-        rfx2:[{rel:{riven:+1}}],
-        rfx3:[{rel:{riven:-1}}],
-      }
-    }
-  };
+function ensureStart(id){const ch=ST.chats[id];if(ch.seeded)return;const sc=Scripts[id];if(sc?.start&&!ch.messages.length&&!ch.queue.length){ch.queue.push({...sc.start});ch.step='started';ch.seeded=true;save();}}
+function unlock(id){if(!ST.unlocked[id])ST.unlocked[id]=true;ST.unread[id]=(ST.unread[id]||0)+1;}
 
-  // After CH1 (seed other boys once)
-  if(!ST.flags.__ch2Intro && ST.unlocked.riven){
-    ST.flags.__ch2Intro = true;
+function applyEffects(effects=[]){effects.forEach(e=>{if(e.unlock)unlock(e.unlock);if(e.rel){for(const k in e.rel){ST.rel[k]=(ST.rel[k]||0)+e.rel[k];}}if(e.flag)ST.flags[e.flag]=true;});save();}
 
-    if(!ST.chats.riven.seeded && !ST.chats.riven.messages.length && !ST.chats.riven.queue.length){
-      ST.chats.riven.queue.push({from:'Riven',text:'If you want answers, meet me at the riverside tonight.'});
-      ST.chats.riven.seeded = true;
-    }
-    if(!ST.chats.noah.seeded && !ST.chats.noah.messages.length && !ST.chats.noah.queue.length){
-      ST.unlocked.noah = true;
-      ST.chats.noah.queue.push({from:'Noah',text:'Hi '+(ST.playerName||'there')+'! I’m Noah—Maya said we’d vibe.'});
-      ST.chats.noah.seeded = true;
-    }
-    if(!ST.chats.victor.seeded && !ST.chats.victor.messages.length && !ST.chats.victor.queue.length){
-      ST.unlocked.victor = true;
-      ST.chats.victor.queue.push({from:'Victor',text:'I have a theory about last night’s incident. Do you have a minute?'});
-      ST.chats.victor.seeded = true;
-    }
+function AppBar(){return(<div className="appbar"><button className="btn-top" onClick={reset}>Reset</button><b>Heartline</b><div style={{width:'60px'}}/></div>);}
+function Home(){const total=Object.values(ST.unread).reduce((a,b)=>a+b,0);const apps=[['Messages','💬',()=>{ST.screen='messages';ensureStart('maja');ST.unread.maja=(ST.unread.maja||0)+1;save();render();}],
+['Phone','📞'],['Gallery','🖼️'],['Clock','⏰'],['Settings','⚙️'],['Notes','📝'],['Music','🎵'],['Calendar','📅'],['Mail','✉️']];
+return(<div className="screen"><div className="home"><div className="welcome">Welcome, {ST.playerName} 💖</div>
+<div className="grid">{apps.map(([n,i,fn])=>(<button key={n} className="app" onClick={()=>fn&&fn()}><div className="app-icon">{i}</div>{n==='Messages'&&total>0&&<div className="badge">{total}</div>}<div className="app-name">{n}</div></button>))}</div>
+<div className="home-hint">Tap “Messages” to open chats</div></div></div>);}
 
-    ST.unread.riven  = (ST.unread.riven ||0)+1;
-    ST.unread.noah   = (ST.unread.noah  ||0)+1;
-    ST.unread.victor = (ST.unread.victor||0)+1;
-    save();
-  }
+function Initial({cls,ch,small=false}){return<div className={small?'initial-sm '+cls:'initial '+cls}>{ch}</div>;}
+function Messages(){const visible=Object.keys(ST.unlocked).filter(i=>ST.unlocked[i]).map(i=>CONTACTS.find(c=>c.id===i));
+const last=id=>{const m=ST.chats[id]?.messages||[];return m.length?m[m.length-1].text:(Scripts[id]?.start?.text||'');};
+return(<div className="messages"><div className="topbar"><button className="btn" onClick={()=>{ST.screen='home';save();render();}}>◀︎ Home</button><div style={{fontWeight:700}}>Messages</div><div style={{width:24}}/></div>
+<div className="list">{visible.map(c=>(<button key={c.id} className="contact" onClick={()=>openChat(c.id)}><Initial cls={c.color} ch={c.initial}/><div><div className="name">{c.name}</div><div className="last">{last(c.id)}</div></div>{(ST.unread[c.id]||0)>0&&<div className="badge badge-row">{ST.unread[c.id]}</div>}</button>))}</div></div>);}
+function openChat(id){const ch=ST.chats[id];if(ch.messages.length>0&&ch.seeded&&!ch.started)ch.started=true;ensureStart(id);ST.current=id;ST.screen='chat';ST.unread[id]=0;save();render();}
 
-  return CH1;
-}
-
-/* ================== HELPERS ================== */
-const CONTACTS = [
-  { id:'maja',   name:'Maya',   color:'i-maja',   initial:'M' },
-  { id:'riven',  name:'Riven',  color:'i-riven',  initial:'R' },
-  { id:'noah',   name:'Noah',   color:'i-noah',   initial:'N' },
-  { id:'victor', name:'Victor', color:'i-victor', initial:'V' },
-];
-
-function ensureStart(id){
-  const ch = ST.chats[id];
-  if (ch.seeded) return;                 // already seeded once
-  const sc = scriptsFor()[id];
-  if (sc?.start && ch.messages.length===0 && ch.queue.length===0){
-    ch.queue.push({...sc.start});
-    ch.step = 'started';
-    ch.seeded = true;
-    save();
-  }
-}
-
-function unlock(id){
-  if(!ST.unlocked[id]) ST.unlocked[id]=true;
-  ST.unread[id] = (ST.unread[id]||0)+1;
-}
-
-function applyEffects(effects=[]){
-  effects.forEach(e=>{
-    if(e.unlock) unlock(e.unlock);
-    if(e.rel){ for(const k in e.rel){ ST.rel[k]=(ST.rel[k]||0)+e.rel[k]; } }
-    if(e.flag){ ST.flags[e.flag]=true; }
-  });
-  save();
-}
-
-/* ================== UI (React) ================== */
-const {useState,useEffect} = React;
-
-function AppBar(){
-  return (
-    <div className="appbar">
-      <button className="btn-top" onclick="location.reload()">⟲ Refresh</button>
-      <b>Heartline</b>
-      <button className="btn-top" onclick="localStorage.removeItem(SAVEKEY); location.reload();">Reset</button>
-    </div>
-  );
-}
-
-function Home(){
-  const total = Object.values(ST.unread).reduce((a,b)=>a+b,0);
-  const apps=[['Messages','💬',()=>{ ST.screen='messages'; ensureStart('maja'); ST.unread.maja=(ST.unread.maja||0)+1; save(); render(); }],
-              ['Phone','📞',null],['Gallery','🖼️',null],['Clock','⏰',null],['Settings','⚙️',null],['Notes','📝',null],['Music','🎵',null],['Calendar','📅',null],['Mail','✉️',null]];
-  return (
-    <div className="screen">
-      <div className="home">
-        <div className="welcome">Welcome, {ST.playerName} 💖</div>
-        <div className="grid">
-          {apps.map(([name,icon,fn])=>(
-            <button key={name} className="app" onClick={()=>fn&&fn()}>
-              <div className="app-icon">{icon}</div>
-              {name==='Messages' && total>0 && <div className="badge">{total}</div>}
-              <div className="app-name">{name}</div>
-            </button>
-          ))}
-        </div>
-        <div className="home-hint">Tap “Messages” to open chats</div>
-      </div>
-    </div>
-  );
-}
-
-function Initial({ cls, ch, small=false }){
-  return <div className={small?'initial-sm '+cls:'initial '+cls}>{ch}</div>;
-}
-
-function Messages(){
-  const visible = Object.keys(ST.unlocked).filter(id=>ST.unlocked[id]).map(id=>CONTACTS.find(c=>c.id===id));
-  const last = id=>{
-    const m = ST.chats[id]?.messages||[];
-    return m.length? m[m.length-1].text : (scriptsFor()[id]?.start?.text || '');
-  };
-  return (
-    <div className="messages">
-      <div className="topbar">
-        <button className="btn" onClick={()=>{ST.screen='home'; save(); render();}}>◀︎ Home</button>
-        <div style={{fontWeight:700}}>Messages</div>
-        <div style={{width:24}}/>
-      </div>
-      <div className="list">
-        {visible.map(c=>(
-          <button key={c.id} className="contact" onClick={()=>openChat(c.id)}>
-            <Initial cls={c.color} ch={c.initial}/>
-            <div><div className="name">{c.name}</div><div className="last">{last(c.id)}</div></div>
-            {(ST.unread[c.id]||0)>0 && <div className="badge badge-row">{ST.unread[c.id]}</div>}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function openChat(id){
-  const ch = ST.chats[id];
-  if (ch.messages.length>0 && ch.seeded && !ch.started) ch.started = true;
-  ensureStart(id);
-  ST.current = id;
-  ST.screen = 'chat';
-  ST.unread[id] = 0;
-  save();
-  render();
-}
-
-function Chat(){
-  const id = ST.current;
-  const contact = CONTACTS.find(c=>c.id===id);
-  const ch = ST.chats[id];
-
-  function stepNext(){
-    if (!ch.queue.length) return;
-    const msg = ch.queue.shift();
-    ch.messages.push(msg);
-    if (!ch.started) ch.started = true;
-    if (ch.queue.length===0 && ch.step==='started'){
-      ch.choices = (scriptsFor()[id]?.choices)||[];
-      ch.step='await';
-    }
-    save(); render();
-  }
-
-  function choose(choiceId){
-    const sc = scriptsFor()[id];
-    const pick = (sc.choices||[]).find(x=>x.id===choiceId);
-    // player's bubble
-    ch.messages.push({from:'You', text:pick.text, me:true});
-    ch.choices = [];
-    // replies
-    const bundle = (sc.replies||{})[choiceId]||[];
-    ch.queue.push(...bundle);
-    // effects
-    applyEffects((sc.effects||{})[choiceId]||[]);
-    save(); render();
-  }
-
-  // Riven follow-up
-  if(id==='riven'){
-    const sc = scriptsFor().riven;
-    if(ch.queue.length===0 && ch.choices.length===0 && ch.messages.length>0 && ch.step!=='follow'){
-      ch.choices = sc.followupChoices;
-      ch.step='follow';
-    }
-    if(ch.step==='follow'){
-      const _choose = choose;
-      choose = function(choiceId){
-        const sc = scriptsFor().riven;
-        const pick = (sc.followupChoices||[]).find(x=>x.id===choiceId);
-        ch.messages.push({from:'You', text:pick.text, me:true});
-        ch.choices = [];
-        ch.queue.push(...(sc.followupReplies[choiceId]||[]));
-        applyEffects((sc.effects||{})[choiceId]||[]);
-        save(); render();
-      }
-    }
-  }
-
-  return (
-    <div className="messages">
-      <div className="topbar">
-        <button className="btn" onClick={()=>{ST.screen='messages'; save(); render();}}>Back</button>
-        <div style={{fontWeight:700}}>{contact.name}</div>
-        <Initial cls={contact.color} ch={contact.initial}/>
-      </div>
-      <div className="chat">
-        {ch.messages.map((m,i)=>(
-          <div key={i} className="rowmsg" style={{justifyContent:m.me?'flex-end':'flex-start'}}>
-            {!m.me && <Initial small cls={(CONTACTS.find(x=>x.name===m.from)||contact).color} ch={(m.from||'?')[0]} />}
-            <div className={`bubble ${m.me?'from-me':'from-them'}`}>
-              <div className="sender">{m.me?'You':m.from}</div>
-              <div>{m.text}</div>
-            </div>
-            {m.me && <Initial small cls={'i-maja'} ch={'Y'}/>}
-          </div>
-        ))}
-      </div>
-      {ch.queue.length>0
-        ? <div className="nextbar"><button className="choice" onClick={stepNext}>Next ▶</button></div>
-        : <div className="choices">
-            {ch.choices.length ? ch.choices.map(c=>
-              <button key={c.id} className="choice" onClick={()=>choose(c.id)}>{c.text}</button>
-            ) : <div style={{fontSize:12,color:'#6b7280'}}>No choices — wait for new message</div>}
-          </div>}
-    </div>
-  );
-}
-
-/* ================== ROOT ================== */
-function App(){
-  return (
-    <div className="stage">
-      <div className="phone">
-        <AppBar/>
-        <div className="screen">
-          {ST.screen==='home' && <Home/>}
-          {ST.screen==='messages' && <Messages/>}
-          {ST.screen==='chat' && <Chat/>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function render(){ ReactDOM.createRoot(document.getElementById('root')).render(<App/>); }
-render();
-</script>
-</body>
-</html>
+function Chat(){const id=ST.current;const contact=CONTACTS.find(c=>c.id===id);const ch=ST.chats[id];
+function stepNext(){if(!ch.queue.length)return;const msg=ch.queue.shift();ch.messages.push(msg);if(!ch.started)ch.started=true;
+if(ch.queue.length===0&&ch.step==='started'){ch.choices=(Scripts[id]?.choices)||[];ch.step='await';}save();render();}
+function choose(cid){const sc=Scripts[id];const pick=(sc.choices||[]).find(x=>x.id===cid);ch.messages.push({from:'You',text:pick.text,me:true});
+ch.choices=[];const bundle=(sc.replies||{})[cid]||[];ch.queue.push(...bundle);applyEffects((sc.effects||{})[cid]||[]);save();render();}
+if(id==='riven'){const sc=Scripts.riven;if(ch.queue.length===0&&ch.choices.length===0&&ch.messages.length>0&&ch.step!=='follow'){ch.choices=sc.followupChoices;ch.step='follow';}
+if(ch.step==='follow'){choose=function(cid){const sc=Scripts.riven;const pick=(sc.followupChoices||[]).find(x=>x.id===cid);
+ch.messages.push({from:'You',text:pick.text,me:true});ch.choices=[];ch.queue.push(...(sc.followupReplies[cid]||[]));applyEffects((sc.effects||{})[cid]||[]);save();render();}}}
+return(<div className="messages"><div className="topbar"><button className="btn" onClick={()=>{ST.screen='messages';save();render();}}>Back</
