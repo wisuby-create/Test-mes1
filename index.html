@@ -22,7 +22,7 @@
   }
   .appbar{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#0b1220;color:#fff}
   .appbar b{font-weight:700}
-  .btn-top{background:#182034;border:0;color:#e5e7eb;border-radius:10px;padding:6px 10px;font-size:12px}
+  .btn-top{background:#182034;border:0;color:#e5e7eb;border-radius:10px;padding:6px 10px;font-size:12px;cursor:pointer}
   /* wallpaper */
   .screen{position:relative;flex:1;overflow:hidden;background:linear-gradient(135deg,var(--bg1),var(--bg2))}
   .screen::before{
@@ -39,6 +39,14 @@
 </g></svg>');
     background-size:280px 280px;background-repeat:repeat
   }
+  /* START */
+  .start-wrap{height:100%;display:grid;place-items:center;padding:18px}
+  .card{background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-radius:22px;box-shadow:var(--shadow);padding:22px; text-align:center; width:min(320px,90%)}
+  .title{font-size:28px;font-weight:800;letter-spacing:.5px;margin-bottom:10px}
+  .btn-primary{background:linear-gradient(135deg,#fb7185,#f472b6);color:#fff;border:0;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
+  .btn-ghost{background:transparent;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:10px 12px;cursor:pointer;width:100%;margin-top:8px}
+  /* NAME */
+  .name-box input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,.12);font-size:16px}
   /* HOME */
   .home{position:relative;z-index:1;padding:18px;height:100%;display:flex;flex-direction:column}
   .welcome{margin:4px 0 12px 4px;color:#1f2937;font-weight:700}
@@ -81,65 +89,320 @@
 <script type="text/babel">
 const {useState,useEffect}=React;
 
-function baseChat(){return{messages:[],queue:[],choices:[],step:'idle',seeded:false,started:false};}
+/* ---------- STATE & SAVE ---------- */
+function newChat(){return{messages:[],pending:[],choices:[],seeded:false,introDone:false,followDone:false};}
 function makeState(){
- return{screen:'home',current:null,playerName:'Player',
- unlocked:{maja:true,riven:false,noah:false,victor:false},
- unread:{},flags:{},rel:{},chats:{maja:baseChat(),riven:baseChat(),noah:baseChat(),victor:baseChat()}};
+  return{
+    screen:'start',                  // 'start' | 'name' | 'home' | 'messages' | 'chat'
+    current:null,
+    playerName:'',
+    unlocked:{maja:true,riven:false,noah:false,victor:false},
+    unread:{},
+    flags:{},
+    rel:{riven:0,noah:0,victor:0},
+    chats:{maja:newChat(),riven:newChat(),noah:newChat(),victor:newChat()}
+  };
 }
-const SAVEKEY='HL_SAVE'; let ST=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||makeState();
+const SAVEKEY='HL_SAVE_V2';
+let ST=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||makeState();
 function save(){localStorage.setItem(SAVEKEY,JSON.stringify(ST));}
-function reset(){localStorage.removeItem(SAVEKEY);location.reload();}
+function hardReset(){localStorage.removeItem(SAVEKEY);location.reload();}
 
-const CONTACTS=[{id:'maja',name:'Maya',color:'i-maja',initial:'M'},
-{id:'riven',name:'Riven',color:'i-riven',initial:'R'},
-{id:'noah',name:'Noah',color:'i-noah',initial:'N'},
-{id:'victor',name:'Victor',color:'i-victor',initial:'V'}];
-
+/* ---------- SCRIPTS (CH1 excerpt) ---------- */
 const Scripts={
-maja:{start:{from:'Maya',text:'Hey! Guess who texted me today 👀'},
-choices:[{id:'m1',text:"Don't keep me in suspense!"},{id:'m2',text:"Please don't say Riven…"},{id:'m3',text:"Not in the mood, Maya."}],
-replies:{m1:[{from:'Maya',text:'Riven. He texted ME instead of you.'},{from:'Maya',text:"What is he even doing? 😤"}],
-m2:[{from:'Maya',text:'…yeah. Sorry 😅'},{from:'Maya',text:'He asked if you were still mad.'}],
-m3:[{from:'Maya',text:'Uh-huh. And yet you’re reading this 👀'},{from:'Maya',text:'You always want to know, [MC].'}]},
-effects:{m1:[{unlock:'riven'}],m2:[{unlock:'riven'}],m3:[{unlock:'riven'}]}},
-riven:{start:{from:'Riven',text:'You still awake?'},choices:[{id:'r1',text:"Didn't expect to hear from you."},
-{id:'r2',text:"I don't sleep much lately."},{id:'r3',text:"(Don’t reply)"}],
-replies:{r1:[{from:'Riven',text:"Me neither. Guess we're both bad at letting go."},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
-r2:[{from:'Riven',text:'Figures. You used to text me at 2AM just to send memes.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
-r3:[{from:'Riven',text:'…yeah. I probably deserve the silence.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}]},
-followupChoices:[{id:'rfx1',text:'I try not to.'},{id:'rfx2',text:'Every day.'},{id:'rfx3',text:'Delete my number, Riven.'}],
-followupReplies:{rfx1:[{from:'Riven',text:"I get that. Still, I can't stop."}],
-rfx2:[{from:'Riven',text:'Same. It messes with my head.'}],
-rfx3:[{from:'Riven',text:'Got it. (…Still sorry.)'}]},
-effects:{r1:[{rel:{riven:+1}}],r2:[{rel:{riven:+1}}],r3:[{rel:{riven:-1}}],
-rfx1:[{rel:{riven:+1}}],rfx2:[{rel:{riven:+1}}],rfx3:[{rel:{riven:-1}}]}}};
+  maja:{
+    start:{from:'Maya',text:'Hey! Guess who texted me today 👀'},
+    choices:[
+      {id:'m1',text:"Don't keep me in suspense!"},
+      {id:'m2',text:"Please don't say Riven…"},
+      {id:'m3',text:"Not in the mood, Maya."},
+    ],
+    replies:{
+      m1:[{from:'Maya',text:'Riven. He texted ME instead of you.'},{from:'Maya',text:"What is he even doing? 😤"}],
+      m2:[{from:'Maya',text:'…yeah. Sorry 😅'},{from:'Maya',text:'He asked if you were still mad.'}],
+      m3:[{from:'Maya',text:'Uh-huh. And yet you’re reading this 👀'},{from:'Maya',text:'You always want to know, [MC].'}],
+    },
+    effects:{
+      m1:[{unlock:'riven'}],
+      m2:[{unlock:'riven'}],
+      m3:[{unlock:'riven'}],
+    },
+  },
+  riven:{
+    start:{from:'Riven',text:'You still awake?'},
+    choices:[
+      {id:'r1',text:"Didn't expect to hear from you."},
+      {id:'r2',text:"I don't sleep much lately."},
+      {id:'r3',text:"(Don’t reply)"},
+    ],
+    replies:{
+      r1:[{from:'Riven',text:"Me neither. Guess we're both bad at letting go."},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+      r2:[{from:'Riven',text:'Figures. You used to text me at 2AM just to send memes.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+      r3:[{from:'Riven',text:'…yeah. I probably deserve the silence.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+    },
+    followupChoices:[
+      {id:'rfx1',text:'I try not to.'},
+      {id:'rfx2',text:'Every day.'},
+      {id:'rfx3',text:'Delete my number, Riven.'},
+    ],
+    followupReplies:{
+      rfx1:[{from:'Riven',text:"I get that. Still, I can't stop."}],
+      rfx2:[{from:'Riven',text:'Same. It messes with my head.'}],
+      rfx3:[{from:'Riven',text:'Got it. (…Still sorry.)'}],
+    },
+    effects:{
+      r1:[{rel:{riven:+1}}], r2:[{rel:{riven:+1}}], r3:[{rel:{riven:-1}}],
+      rfx1:[{rel:{riven:+1}}], rfx2:[{rel:{riven:+1}}], rfx3:[{rel:{riven:-1}}],
+    }
+  }
+};
+function unlock(id){ if(!ST.unlocked[id]) ST.unlocked[id]=true; ST.unread[id]=(ST.unread[id]||0)+1; }
+function applyEffects(list=[]){
+  list.forEach(e=>{
+    if(e.unlock) unlock(e.unlock);
+    if(e.rel){ for(const k in e.rel){ ST.rel[k]=(ST.rel[k]||0)+e.rel[k]; } }
+    if(e.flag) ST.flags[e.flag]=true;
+  });
+  save();
+}
 
-function ensureStart(id){const ch=ST.chats[id];if(ch.seeded)return;const sc=Scripts[id];if(sc?.start&&!ch.messages.length&&!ch.queue.length){ch.queue.push({...sc.start});ch.step='started';ch.seeded=true;save();}}
-function unlock(id){if(!ST.unlocked[id])ST.unlocked[id]=true;ST.unread[id]=(ST.unread[id]||0)+1;}
+/* ---------- CONTACTS ---------- */
+const CONTACTS=[
+  {id:'maja',name:'Maya',color:'i-maja',initial:'M'},
+  {id:'riven',name:'Riven',color:'i-riven',initial:'R'},
+  {id:'noah',name:'Noah',color:'i-noah',initial:'N'},
+  {id:'victor',name:'Victor',color:'i-victor',initial:'V'},
+];
 
-function applyEffects(effects=[]){effects.forEach(e=>{if(e.unlock)unlock(e.unlock);if(e.rel){for(const k in e.rel){ST.rel[k]=(ST.rel[k]||0)+e.rel[k];}}if(e.flag)ST.flags[e.flag]=true;});save();}
+/* ---------- HELPERS ---------- */
+function ensureSeed(id){
+  const ch=ST.chats[id];
+  if(ch.seeded) return;
+  const sc=Scripts[id];
+  if(sc?.start){ ch.pending.push({...sc.start}); ch.seeded=true; }
+  save();
+}
 
-function AppBar(){return(<div className="appbar"><button className="btn-top" onClick={reset}>Reset</button><b>Heartline</b><div style={{width:'60px'}}/></div>);}
-function Home(){const total=Object.values(ST.unread).reduce((a,b)=>a+b,0);const apps=[['Messages','💬',()=>{ST.screen='messages';ensureStart('maja');ST.unread.maja=(ST.unread.maja||0)+1;save();render();}],
-['Phone','📞'],['Gallery','🖼️'],['Clock','⏰'],['Settings','⚙️'],['Notes','📝'],['Music','🎵'],['Calendar','📅'],['Mail','✉️']];
-return(<div className="screen"><div className="home"><div className="welcome">Welcome, {ST.playerName} 💖</div>
-<div className="grid">{apps.map(([n,i,fn])=>(<button key={n} className="app" onClick={()=>fn&&fn()}><div className="app-icon">{i}</div>{n==='Messages'&&total>0&&<div className="badge">{total}</div>}<div className="app-name">{n}</div></button>))}</div>
-<div className="home-hint">Tap “Messages” to open chats</div></div></div>);}
+/* ---------- UI ---------- */
+function AppBar(){
+  return (
+    <div className="appbar">
+      <button className="btn-top" onClick={hardReset}>Reset</button>
+      <b>Heartline</b>
+      <div style={{width:'60px'}}/>
+    </div>
+  );
+}
 
-function Initial({cls,ch,small=false}){return<div className={small?'initial-sm '+cls:'initial '+cls}>{ch}</div>;}
-function Messages(){const visible=Object.keys(ST.unlocked).filter(i=>ST.unlocked[i]).map(i=>CONTACTS.find(c=>c.id===i));
-const last=id=>{const m=ST.chats[id]?.messages||[];return m.length?m[m.length-1].text:(Scripts[id]?.start?.text||'');};
-return(<div className="messages"><div className="topbar"><button className="btn" onClick={()=>{ST.screen='home';save();render();}}>◀︎ Home</button><div style={{fontWeight:700}}>Messages</div><div style={{width:24}}/></div>
-<div className="list">{visible.map(c=>(<button key={c.id} className="contact" onClick={()=>openChat(c.id)}><Initial cls={c.color} ch={c.initial}/><div><div className="name">{c.name}</div><div className="last">{last(c.id)}</div></div>{(ST.unread[c.id]||0)>0&&<div className="badge badge-row">{ST.unread[c.id]}</div>}</button>))}</div></div>);}
-function openChat(id){const ch=ST.chats[id];if(ch.messages.length>0&&ch.seeded&&!ch.started)ch.started=true;ensureStart(id);ST.current=id;ST.screen='chat';ST.unread[id]=0;save();render();}
+/* Start screen */
+function StartScreen(){
+  return (
+    <div className="screen">
+      <div className="start-wrap">
+        <div className="card">
+          <div className="title">Heartline</div>
+          <div style="font-size:13px;color:#374151;margin-bottom:10px">Romance Messenger • Demo</div>
+          <button className="btn-primary" onClick={()=>{ST.screen='name'; save(); render();}}>Start</button>
+          <button className="btn-ghost" onClick={hardReset}>Reset save</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-function Chat(){const id=ST.current;const contact=CONTACTS.find(c=>c.id===id);const ch=ST.chats[id];
-function stepNext(){if(!ch.queue.length)return;const msg=ch.queue.shift();ch.messages.push(msg);if(!ch.started)ch.started=true;
-if(ch.queue.length===0&&ch.step==='started'){ch.choices=(Scripts[id]?.choices)||[];ch.step='await';}save();render();}
-function choose(cid){const sc=Scripts[id];const pick=(sc.choices||[]).find(x=>x.id===cid);ch.messages.push({from:'You',text:pick.text,me:true});
-ch.choices=[];const bundle=(sc.replies||{})[cid]||[];ch.queue.push(...bundle);applyEffects((sc.effects||{})[cid]||[]);save();render();}
-if(id==='riven'){const sc=Scripts.riven;if(ch.queue.length===0&&ch.choices.length===0&&ch.messages.length>0&&ch.step!=='follow'){ch.choices=sc.followupChoices;ch.step='follow';}
-if(ch.step==='follow'){choose=function(cid){const sc=Scripts.riven;const pick=(sc.followupChoices||[]).find(x=>x.id===cid);
-ch.messages.push({from:'You',text:pick.text,me:true});ch.choices=[];ch.queue.push(...(sc.followupReplies[cid]||[]));applyEffects((sc.effects||{})[cid]||[]);save();render();}}}
-return(<div className="messages"><div className="topbar"><button className="btn" onClick={()=>{ST.screen='messages';save();render();}}>Back</
+/* Name screen */
+function NameScreen(){
+  let inputRef=null;
+  const setAndGo=()=>{
+    const v=(inputRef?.value||'').trim()||'Player';
+    ST.playerName=v;
+    ST.screen='home';
+    save(); render();
+  };
+  return (
+    <div className="screen">
+      <div className="start-wrap">
+        <div className="card name-box">
+          <div className="title" style={{fontSize:22}}>Welcome!</div>
+          <div style="font-size:13px;color:#374151;margin:8px 0 10px">Enter your name (it will appear in chats):</div>
+          <input placeholder="Your name" autofocus onKeydown={(e)=>{if(e.key==='Enter') setAndGo();}} ref={el=>inputRef=el}/>
+          <button className="btn-primary" onClick={setAndGo}>OK</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Home screen */
+function Home(){
+  const total=Object.values(ST.unread).reduce((a,b)=>a+b,0);
+  const openMessages=()=>{
+    ST.screen='messages';
+    ensureSeed('maja');                   // pierwsza rozmowa od Mai
+    ST.unread.maja=(ST.unread.maja||0)+1; // badge
+    save(); render();
+  };
+  const apps=[
+    ['Messages','💬',openMessages],['Phone','📞'],['Gallery','🖼️'],
+    ['Clock','⏰'],['Settings','⚙️'],['Notes','📝'],
+    ['Music','🎵'],['Calendar','📅'],['Mail','✉️']
+  ];
+  return (
+    <div className="screen">
+      <div className="home">
+        <div className="welcome">Welcome, {ST.playerName||'Player'} 💖</div>
+        <div className="grid">
+          {apps.map(([n,i,fn])=>(
+            <button key={n} className="app" onClick={()=>fn && fn()}>
+              <div className="app-icon">{i}</div>
+              {n==='Messages' && total>0 && <div className="badge">{total}</div>}
+              <div className="app-name">{n}</div>
+            </button>
+          ))}
+        </div>
+        <div className="home-hint">Tap “Messages” to open chats</div>
+      </div>
+    </div>
+  );
+}
+
+/* Messages list */
+function Messages(){
+  const visible=Object.keys(ST.unlocked).filter(id=>ST.unlocked[id]).map(id=>CONTACTS.find(c=>c.id===id));
+  const last=(id)=>{
+    const m=ST.chats[id]?.messages||[];
+    return m.length? m[m.length-1].text : (Scripts[id]?.start?.text || '');
+  };
+  const openChat=(id)=>{
+    ensureSeed(id);
+    ST.current=id;
+    ST.screen='chat';
+    ST.unread[id]=0;
+    save(); render();
+  };
+  return (
+    <div className="messages">
+      <div className="topbar">
+        <button className="btn" onClick={()=>{ST.screen='home'; save(); render();}}>◀ Home</button>
+        <div style={{fontWeight:700}}>Messages</div>
+        <div style={{width:24}}/>
+      </div>
+      <div className="list">
+        {visible.map(c=>(
+          <button key={c.id} className="contact" onClick={()=>openChat(c.id)}>
+            <div className={'initial '+c.color}>{c.initial}</div>
+            <div><div className="name">{c.name}</div><div className="last">{last(c.id)}</div></div>
+            {(ST.unread[c.id]||0)>0 && <div className="badge badge-row">{ST.unread[c.id]}</div>}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Chat */
+function Chat(){
+  const id=ST.current;
+  const contact=CONTACTS.find(c=>c.id===id);
+  const ch=ST.chats[id];
+
+  // NEXT: z kolejki -> na ekran
+  function stepNext(){
+    if(!ch.pending.length) return;
+    const msg=ch.pending.shift();
+    ch.messages.push(msg);
+    // po wyświetleniu startu — pokaż wybory (tylko raz)
+    if(ch.pending.length===0 && !ch.introDone && ch.seeded){
+      ch.choices=(Scripts[id]?.choices)||[];
+    }
+    save(); render();
+  }
+
+  // WYBÓR
+  function choose(cid){
+    const sc=Scripts[id];
+    const pick=(sc.choices||[]).find(x=>x.id===cid);
+    if(!pick) return;
+    ch.messages.push({from:'You',text:pick.text,me:true});
+    ch.choices=[];            // schowaj wybory
+    ch.introDone=true;        // już nie pokazywać przy ponownym wejściu
+    ch.pending.push(...((sc.replies||{})[cid]||[]));
+    applyEffects((sc.effects||{})[cid]||[]); // np. odblokuj Rivena
+    save(); render();
+  }
+
+  // FOLLOW-UP Riven — tylko raz, gdy skończą się pending + już był intro
+  if(id==='riven' && ch.introDone && !ch.followDone && ch.pending.length===0 && ch.choices.length===0){
+    ch.choices=Scripts.riven.followupChoices;
+    save();
+  }
+  function chooseFollow(cid){
+    const sc=Scripts.riven;
+    const pick=(sc.followupChoices||[]).find(x=>x.id===cid);
+    if(!pick) return;
+    ch.messages.push({from:'You',text:pick.text,me:true});
+    ch.choices=[];
+    ch.followDone=true;                   // nie pokazuj ponownie
+    ch.pending.push(...(sc.followupReplies[cid]||[]));
+    applyEffects((sc.effects||{})[cid]||[]);
+    save(); render();
+  }
+
+  const onChoose=(cid)=>{
+    if(id==='riven' && ['rfx1','rfx2','rfx3'].includes(cid)) chooseFollow(cid);
+    else choose(cid);
+  };
+
+  return (
+    <div className="messages">
+      <div className="topbar">
+        <button className="btn" onClick={()=>{ST.screen='messages'; save(); render();}}>Back</button>
+        <div style={{fontWeight:700}}>{contact.name}</div>
+        <div className={'initial-sm '+contact.color} style={{width:24,height:24}}>{contact.initial}</div>
+      </div>
+
+      <div className="chat">
+        {ch.messages.map((m,i)=>(
+          <div key={i} className="rowmsg" style={{justifyContent:m.me?'flex-end':'flex-start'}}>
+            {!m.me && <div className={'initial-sm '+contact.color}>{(m.from||'?')[0]}</div>}
+            <div className={'bubble '+(m.me?'from-me':'from-them')}>
+              <div className="sender">{m.me?'You':m.from}</div>
+              <div>{m.text.replace('[MC]', ST.playerName||'you')}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {ch.pending.length>0
+        ? <div className="nextbar"><button className="btn-top" onClick={stepNext}>Next ▶</button></div>
+        : <div className="choices">
+            {ch.choices.length
+              ? ch.choices.map(c=><button key={c.id} className="choice" onClick={()=>onChoose(c.id)}>{c.text}</button>)
+              : <div style={{fontSize:12,color:'#6b7280'}}>No new messages…</div>}
+          </div>}
+    </div>
+  );
+}
+
+/* ---------- ROOT ---------- */
+function App(){
+  return (
+    <div className="stage">
+      <div className="phone">
+        <AppBar/>
+        {ST.screen==='start' && <StartScreen/>}
+        {ST.screen==='name'  && <NameScreen/>}
+        {ST.screen==='home'  && <Home/>}
+        {ST.screen==='messages' && <Messages/>}
+        {ST.screen==='chat' && <Chat/>}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+function render(){ root.render(<App/>); }
+render();
+</script>
+</body>
+</html>
