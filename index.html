@@ -1,9 +1,9 @@
- <!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>Heartline — Base + Chapters/CG</title>
+<title>Heartline — Full Script (CH1–CH4)</title>
 <style>
   :root{
     --bg1:#ffeef7; --bg2:#d8efff; --ink:#111827; --muted:#6b7280;
@@ -13,21 +13,13 @@
   *{box-sizing:border-box} html,body,#root{height:100%;margin:0}
   body{background:#0f172a;font-family:Inter,ui-sans-serif,-apple-system,Segoe UI,Roboto;color:var(--ink);overflow:hidden}
   .stage{height:100%;display:flex;align-items:center;justify-content:center}
-
-  /* phone */
-  .phone{
-    width:min(360px,calc(100vw - 16px));
-    height:min(780px,calc(100vh - 16px));
-    border-radius:28px;background:#000;border:4px solid #0b0f1a;
-    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column
-  }
+  .phone{width:min(360px,calc(100vw - 16px));height:min(780px,calc(100vh - 16px));
+    border-radius:28px;background:#000;border:4px solid #0b0f1a;box-shadow:var(--shadow);
+    overflow:hidden;display:flex;flex-direction:column}
   .status{height:56px;display:flex;align-items:center;justify-content:center;background:#0b1220;color:#fff;font-weight:900;position:relative}
   .reset{position:absolute;right:8px;top:8px;border:none;background:#1f2937;color:#fff;border-radius:10px;padding:6px 10px;font-weight:800;cursor:pointer}
-
-  /* screen bg */
   .screen{position:relative;flex:1;overflow:hidden;background:linear-gradient(135deg,var(--bg1),var(--bg2))}
-  .screen::before{
-    content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;
+  .screen::before{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;
     background-image:url('data:image/svg+xml;utf8,\
 <svg xmlns="http://www.w3.org/2000/svg" width="700" height="700">\
 <defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#ffffff00"/></radialGradient></defs>\
@@ -37,32 +29,23 @@
 <circle cx="210" cy="320" r="42" fill="%23a7f3d0"/><circle cx="210" cy="320" r="22" fill="url(%23g)"/>\
 <circle cx="430" cy="380" r="58" fill="%23fde68a"/><circle cx="430" cy="380" r="30" fill="url(%23g)"/>\
 <circle cx="300" cy="560" r="44" fill="%23fbcfe8"/><circle cx="300" cy="560" r="22" fill="url(%23g)"/>\
-</g></svg>');
-    background-size:280px 280px;background-repeat:repeat
-  }
+</g></svg>');background-size:280px;background-repeat:repeat}
   .wrap{position:relative;z-index:2;height:100%;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-
-  /* buttons & cards */
   .title{font-weight:900;font-size:28px;letter-spacing:.5px;margin-bottom:16px;color:#0b1220}
   .subtitle{color:#374151;margin-bottom:24px}
   .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .btn{border:0;border-radius:999px;padding:12px 20px;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.12)}
   .btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}
   .btn.ghost{background:rgba(255,255,255,.9);color:#0f172a}
-  .btn.link{background:transparent;color:var(--accent);text-decoration:underline}
   .card{background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:18px;padding:18px;box-shadow:var(--shadow);width:90%;max-width:320px}
   .card label{display:block;font-weight:800;margin-bottom:6px}
   .card input{width:100%;padding:12px;border-radius:12px;border:1px solid #d1d5db;font-size:16px}
-
-  /* home icons */
   .home-inner{width:100%;max-width:300px;margin-top:8px}
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start;justify-items:center}
   .app{position:relative;display:flex;flex-direction:column;align-items:center;background:transparent;border:0;cursor:pointer}
   .app-icon{width:68px;height:68px;border-radius:999px;background:rgba(255,255,255,.85);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.12);font-size:28px}
   .app-name{margin-top:6px;font-size:12px;font-weight:700;color:#1f2937}
   .badge{position:absolute;right:-6px;top:-6px;background:#ef4444;color:#fff;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;font-size:11px;padding:0 6px;border:2px solid #fff}
-
-  /* messages */
   .messages{height:100%;display:flex;flex-direction:column;position:relative;z-index:1}
   .topbar{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.65);backdrop-filter:blur(6px)}
   .btn-top{background:transparent;border:0;font-size:14px;color:#1f2937;cursor:pointer}
@@ -70,9 +53,8 @@
   .contact{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.82);border-radius:14px;padding:10px 12px;text-align:left;position:relative;border:1px solid rgba(0,0,0,.05)}
   .name{font-weight:700}.last{font-size:12px;color:var(--muted)} .badge-row{position:absolute;right:8px;top:8px}
   .initial{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800}
-  .i-maja{background:#f472b6} .i-riven{background:#60a5fa} .i-noah{background:#34d399} .i-victor{background:#8b5cf6}
+  .i-maja{background:#f472b6} .i-riven{background:#60a5fa} .i-noah{background:#34d399} .i-victor{background:#8b5cf6} .i-secret{background:#111827}
   .initial-sm{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
-
   .chat{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
   .rowmsg{display:flex;gap:8px;align-items:flex-start}
   .bubble{max-width:76%;padding:9px 11px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
@@ -82,516 +64,468 @@
   .nextbar,.choices{padding:10px 12px;background:rgba(255,255,255,.85);border-top:1px solid rgba(0,0,0,.06)}
   .choices{display:grid;gap:8px}
   .choice{padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#fff,#f5f8ff);border:1px solid rgba(0,0,0,.06);text-align:left;cursor:pointer}
-
-  /* gallery */
   .gallery{padding:14px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   .cg{border-radius:12px;overflow:hidden;background:rgba(255,255,255,.85);border:1px solid rgba(0,0,0,.06);padding:10px}
   .cg.locked{filter:grayscale(1);opacity:.6}
-  .cg .ttl{font-weight:800;font-size:12px}
-  .cg .cap{font-size:11px;color:#6b7280}
+  .cg .ttl{font-weight:800;font-size:12px}.cg .cap{font-size:11px;color:#6b7280}
 </style>
 </head>
 <body>
 <div id="root"></div>
 
 <script>
-/* ================== STATE / SAVE ================== */
-const SAVE_KEY = 'HL_SAVE_V1';
-const ST = {
-  playerName: null,
-  chapter: 'CH1',
-  rel: { riven:0, noah:0, victor:0 },
-  flags: {},           // {flag: true}
-  cg: {},              // {CG_ID: true}
-  unread: {},          // badges per contact
-  chats: {             // per contact: {messages:[], queue:[], choices:[], step:'idle'}
-    maja:{messages:[],queue:[],choices:[],step:'idle'},
-    riven:{messages:[],queue:[],choices:[],step:'idle'},
-    noah:{messages:[],queue:[],choices:[],step:'idle'},
-    victor:{messages:[],queue:[],choices:[],step:'idle'},
-  },
-  unlocked: {maja:true, riven:false, noah:false, victor:false},
+/* ================== SAVE/STATE ================== */
+const SAVE_KEY='HL_SAVE_FULL_V1';
+const ST={
+  playerName:null, chapter:'CH1', route:null, // null|'riven'|'noah'|'victor'|'secret'
+  rel:{riven:0,noah:0,victor:0,secret:0},
+  flags:{}, cg:{}, unread:{},
+  chats:{maja:baseChat(), riven:baseChat(), noah:baseChat(), victor:baseChat(), secret:baseChat()},
 };
+function baseChat(){ return {messages:[],queue:[],choices:[],step:'idle'}; }
 function save(){ localStorage.setItem(SAVE_KEY, JSON.stringify(ST)); }
-function load(){
-  const raw = localStorage.getItem(SAVE_KEY);
-  if(!raw) return;
-  try{
-    const obj = JSON.parse(raw);
-    Object.assign(ST, obj);
-    // safety
-    ST.flags ||= {}; ST.cg ||= {}; ST.rel ||= {riven:0,noah:0,victor:0};
-    ST.unread ||= {}; ST.chats ||= ST.chats;
-  }catch(e){ console.warn('bad save', e); }
-}
-function hardReset(){
-  localStorage.removeItem(SAVE_KEY);
-  location.reload();
-}
-
-/* ================== CONTACTS & HELPERS ================== */
-const CONTACTS = [
-  { id:'maja',   name:'Maya',   color:'i-maja',   initial:'M' },
-  { id:'riven',  name:'Riven',  color:'i-riven',  initial:'R' },
-  { id:'noah',   name:'Noah',   color:'i-noah',   initial:'N' },
-  { id:'victor', name:'Victor', color:'i-victor', initial:'V' },
+function load(){ try{ const x=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(x) Object.assign(ST,x); }catch{} }
+function hardReset(){ localStorage.removeItem(SAVE_KEY); location.reload(); }
+const CONTACTS=[
+  {id:'maja',name:'Maya',initial:'M',color:'i-maja'},
+  {id:'riven',name:'Riven',initial:'R',color:'i-riven'},
+  {id:'noah',name:'Noah',initial:'N',color:'i-noah'},
+  {id:'victor',name:'Victor',initial:'V',color:'i-victor'},
+  {id:'secret',name:'???',initial:'?',color:'i-secret'},
 ];
-const C = id => CONTACTS.find(c=>c.id===id);
+const C=id=>CONTACTS.find(c=>c.id===id);
 
-/* ================== CHAPTER CONFIG / SCRIPT ================== */
-/** CH1: Maya -> unlock Riven. One CG condition with Riven. */
-const SCRIPTS = {
-  maja: {
-    start: { from:'Maya', text:'Hey! Guess who texted me today 👀' },
-    choices: [
-      { id:'m1', text:"Don’t keep me in suspense!" },
-      { id:'m2', text:"Please don’t say… Riven." },
-      { id:'m3', text:"Not in the mood, Maya." },
-    ],
-    replies: {
-      m1: [
-        { from:'Maya', text:'Riven. He texted ME instead of you.' },
-        { from:'Maya', text:'What is he even doing? 😤' },
-      ],
-      m2: [
-        { from:'Maya', text:'…yeah. Sorry 😅' },
-        { from:'Maya', text:'He asked if you were still mad.' },
-      ],
-      m3: [
-        { from:'Maya', text:'Uh-huh. And yet you’re reading this 👀' },
-        { from:'Maya', text:`You always want to know, ${'${name}'}.` },
-      ],
-    },
-    effects: {
-      m1: [{unlock:'riven', notify:true, flag:'S1_TOLD', step:'S1_END'}],
-      m2: [{unlock:'riven', notify:true, flag:'S1_TOLD', step:'S1_END'}],
-      m3: [{unlock:'riven', notify:true, flag:'S1_TOLD', step:'S1_END'}],
-    },
-  },
-  riven: {
-    start: { from:'Riven', text:'You still awake?' },
-    choices: [
-      { id:'r1', text:"Didn’t expect to hear from you." },
-      { id:'r2', text:"I don’t sleep much lately." },
-      { id:'r3', text:"(Don’t reply)" },
-    ],
-    replies: {
-      r1: [
-        { from:'Riven', text:"Me neither. Guess we’re both bad at letting go." },
-        { from:'Riven', text:'Maya said you’re still in town.' },
-        { from:'Riven', text:'Do you ever think about… that night?' },
-      ],
-      r2: [
-        { from:'Riven', text:'Figures. You used to text me at 2AM just to send memes.' },
-        { from:'Riven', text:'Maya said you’re still in town.' },
-        { from:'Riven', text:'Do you ever think about… that night?' },
-      ],
-      r3: [
-        { from:'Riven', text:'…yeah. I probably deserve the silence.' },
-        { from:'Riven', text:'Maya said you’re still in town.' },
-        { from:'Riven', text:'Do you ever think about… that night?' },
-      ],
-    },
-    followupChoices: [
-      { id:'rfx1', text:'I try not to.' },
-      { id:'rfx2', text:'Every day.' },
-      { id:'rfx3', text:'Delete my number, Riven.' },
-    ],
-    followupReplies: {
-      rfx1: [{ from:'Riven', text:"I get that. Still, I can’t stop." }],
-      rfx2: [{ from:'Riven', text:'Same. It messes with my head.' }],
-      rfx3: [{ from:'Riven', text:'Got it. (…Still sorry.)' }],
-    },
-    effects: {
-      r1: [{rel:{riven:+1}}],
-      r2: [{rel:{riven:+1}}],
-      r3: [{rel:{riven:-1}}],
-      rfx1: [{rel:{riven:+1}, flag:'RIVEN_OPENED'}],
-      rfx2: [{rel:{riven:+1}, flag:'RIVEN_OPENED'}],
-      rfx3: [{rel:{riven:-1}}],
-    },
-  },
-};
-
-/** CG registry: conditions decide unlocks */
-const CGS = {
-  CG_RIVEN_01: {
-    title:'Moonlit Bridge',
-    caption:'Riven opens up a little.',
-    condition: () => ST.rel.riven >= 2 && !!ST.flags.RIVEN_OPENED,
-  },
-};
-
-/** Chapter gating */
-const CHAPTERS = {
-  CH1: {
-    name:'Chapter 1',
-    unlockedContacts: {maja:true, riven:()=>!!ST.flags.S1_TOLD},
-    endCondition: () => ST.flags.RIVEN_OPENED || ST.rel.riven<=-1,
-    onEnd: () => { ST.chapter='CH2'; },
-  },
-  CH2: {
-    name:'Chapter 2',
-    // placeholder – ready for future scripts
+/* ================== SCRIPT ENGINE ================== */
+/** helper to interpolate name */
+const nm=()=>ST.playerName||'You';
+/** scripts for each chapter/route; each returns mapping {contactId:{start,choices,replies,followupChoices,followupReplies,effects}} */
+function scriptsFor(){
+  switch(ST.chapter){
+    case 'CH1': return {
+      maja:{
+        start:{from:'Maya',text:'Hey! Guess who texted me today 👀'},
+        choices:[
+          {id:'m1',text:"Don’t keep me in suspense!"},
+          {id:'m2',text:"Please don’t say… Riven."},
+          {id:'m3',text:"Not in the mood, Maya."},
+        ],
+        replies:{
+          m1:[{from:'Maya',text:'Riven. He texted ME instead of you.'},{from:'Maya',text:'What is he even doing? 😤'}],
+          m2:[{from:'Maya',text:'…yeah. Sorry 😅'},{from:'Maya',text:'He asked if you were still mad.'}],
+          m3:[{from:'Maya',text:'Uh-huh. And yet you’re reading this 👀'},{from:'Maya',text:`You always want to know, ${nm()}.`}],
+        },
+        effects:{m1:[{unlock:'riven',notify:true,flag:'S1_TOLD'}],
+                 m2:[{unlock:'riven',notify:true,flag:'S1_TOLD'}],
+                 m3:[{unlock:'riven',notify:true,flag:'S1_TOLD'}]},
+      },
+      riven:{
+        start:{from:'Riven',text:'You still awake?'},
+        choices:[
+          {id:'r1',text:"Didn’t expect to hear from you."},
+          {id:'r2',text:"I don’t sleep much lately."},
+          {id:'r3',text:"(Don’t reply)"},
+        ],
+        replies:{
+          r1:[{from:'Riven',text:"Me neither. Guess we’re both bad at letting go."},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+          r2:[{from:'Riven',text:'Figures. You used to text me at 2AM just to send memes.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+          r3:[{from:'Riven',text:'…yeah. I probably deserve the silence.'},{from:'Riven',text:'Maya said you’re still in town.'},{from:'Riven',text:'Do you ever think about… that night?'}],
+        },
+        followupChoices:[
+          {id:'rfx1',text:'I try not to.'},
+          {id:'rfx2',text:'Every day.'},
+          {id:'rfx3',text:'Delete my number, Riven.'},
+        ],
+        followupReplies:{
+          rfx1:[{from:'Riven',text:"I get that. Still, I can’t stop."}],
+          rfx2:[{from:'Riven',text:'Same. It messes with my head.'}],
+          rfx3:[{from:'Riven',text:'Got it. (…Still sorry.)'}],
+        },
+        effects:{r1:[{rel:{riven:+1}}], r2:[{rel:{riven:+1}}], r3:[{rel:{riven:-1}}],
+                 rfx1:[{rel:{riven:+1},flag:'RIVEN_OPENED'}], rfx2:[{rel:{riven:+1},flag:'RIVEN_OPENED'}], rfx3:[{rel:{riven:-1}}]},
+      },
+    };
+    case 'CH2': {
+      // route selection available in first messages of each LI
+      const commonIntro = [{from:'Maya',text:'Okay, I have class — text me later!'}];
+      if(!ST.flags.__ch2Intro){
+        ST.flags.__ch2Intro=true;
+        // seed first previews
+        if(!ST.chats.riven.messages.length&&!ST.chats.riven.queue.length) ST.chats.riven.queue.push({from:'Riven',text:'If you want answers, meet me at the riverside tonight.'});
+        if(!ST.chats.noah.messages.length&&!ST.chats.noah.queue.length) ST.chats.noah.queue.push({from:'Noah',text:'Coffee later? I found something you might like.'});
+        if(!ST.chats.victor.messages.length&&!ST.chats.victor.queue.length) ST.chats.victor.queue.push({from:'Victor',text:'I have a theory about last night’s incident. Do you have a minute?'});        
+        ST.unread.riven=(ST.unread.riven||0)+1;
+        ST.unread.noah=(ST.unread.noah||0)+1;
+        ST.unread.victor=(ST.unread.victor||0)+1;
+        save();
+      }
+      return {
+        maja:{ start:commonIntro[0], choices:[], replies:{}, effects:{} },
+        riven:{
+          start:{from:'Riven',text:'If you want answers, meet me at the riverside tonight.'},
+          choices:[{id:'pickR',text:'(Pursue Riven route)'},{id:'chatR',text:'I might come. Why the riverside?'}],
+          replies:{
+            pickR:[{from:'Riven',text:'Good. Come alone.'}],
+            chatR:[{from:'Riven',text:'You’ll see. It’s quiet there.'}],
+          },
+          effects:{
+            pickR:[{flag:'ROUTE_RIVEN',setRoute:'riven'},{rel:{riven:+1}}],
+            chatR:[{rel:{riven:+1}}],
+          }
+        },
+        noah:{
+          start:{from:'Noah',text:'Coffee later? I found something you might like.'},
+          choices:[{id:'pickN',text:'(Pursue Noah route)'},{id:'chatN',text:'What did you find?'}],
+          replies:{
+            pickN:[{from:'Noah',text:'Yay! I’ll grab the best table.'}],
+            chatN:[{from:'Noah',text:'A record shop pop-up. It screams your name.'}],
+          },
+          effects:{
+            pickN:[{flag:'ROUTE_NOAH',setRoute:'noah'},{rel:{noah:+1}}],
+            chatN:[{rel:{noah:+1}}],
+          }
+        },
+        victor:{
+          start:{from:'Victor',text:'I have a theory about last night’s incident. Do you have a minute?'},
+          choices:[{id:'pickV',text:'(Pursue Victor route)'},{id:'chatV',text:'I’m listening.'}],
+          replies:{
+            pickV:[{from:'Victor',text:'Excellent. I’ll prepare notes.'}],
+            chatV:[{from:'Victor',text:'It’s about patterns. You’ll appreciate this.'}],
+          },
+          effects:{
+            pickV:[{flag:'ROUTE_VICTOR',setRoute:'victor'},{rel:{victor:+1}}],
+            chatV:[{rel:{victor:+1}}],
+          }
+        }
+      };
+    }
+    case 'CH3': {
+      // main route content (short but functional) + endings + CGs
+      if(ST.route==='riven') return {
+        riven:{
+          start:{from:'Riven',text:'You came. Thank you.'},
+          choices:[
+            {id:'r3a',text:'I want the truth.'},
+            {id:'r3b',text:'I’m here for you.'},
+          ],
+          replies:{
+            r3a:[{from:'Riven',text:'Then hear it: I messed up. But I never wanted to hurt you.'}],
+            r3b:[{from:'Riven',text:'...That means more than you know.'}],
+          },
+          effects:{
+            r3a:[{rel:{riven:+1}}],
+            r3b:[{rel:{riven:+2},flag:'RIVEN_VULNERABLE'}],
+          },
+          followupChoices:[
+            {id:'r3end1',text:'Take his hand.'},
+            {id:'r3end2',text:'Walk away.'},
+          ],
+          followupReplies:{
+            r3end1:[{from:'Riven',text:'Stay. Please.'}],
+            r3end2:[{from:'Riven',text:'…I understand.'}],
+          },
+          effects2:{
+            r3end1:[{flag:'END_RIVEN',rel:{riven:+1}}],
+            r3end2:[{flag:'END_RIVEN',rel:{riven:-1}}],
+          }
+        }
+      };
+      if(ST.route==='noah') return {
+        noah:{
+          start:{from:'Noah',text:'I saved you a seat. And maybe a song.'},
+          choices:[
+            {id:'n3a',text:'Play it for me.'},
+            {id:'n3b',text:'I just needed your smile.'},
+          ],
+          replies:{
+            n3a:[{from:'Noah',text:'It’s called “Heartline”. Cheesy, I know.'}],
+            n3b:[{from:'Noah',text:'Then I’ll keep smiling.'}],
+          },
+          effects:{n3a:[{rel:{noah:+2}}], n3b:[{rel:{noah:+1}}]},
+          followupChoices:[
+            {id:'n3end1',text:'Kiss him.'},
+            {id:'n3end2',text:'Hug and say goodnight.'},
+          ],
+          followupReplies:{
+            n3end1:[{from:'Noah',text:'Best encore ever.'}],
+            n3end2:[{from:'Noah',text:'Sweet dreams.'}],
+          },
+          effects2:{n3end1:[{flag:'END_NOAH'}], n3end2:[{flag:'END_NOAH'}]}
+        }
+      };
+      if(ST.route==='victor') return {
+        victor:{
+          start:{from:'Victor',text:'I compiled the data. It points to us being… compatible.'},
+          choices:[
+            {id:'v3a',text:'Are you… confessing?'},
+            {id:'v3b',text:'Let’s test that hypothesis.'},
+          ],
+          replies:{
+            v3a:[{from:'Victor',text:'In my own awkward way — yes.'}],
+            v3b:[{from:'Victor',text:'Controlled environment? Candlelight dinner.'}],
+          },
+          effects:{v3a:[{rel:{victor:+2}}], v3b:[{rel:{victor:+1}}]},
+          followupChoices:[
+            {id:'v3end1',text:'Hold his gaze.'},
+            {id:'v3end2',text:'Tease him gently.'},
+          ],
+          followupReplies:{
+            v3end1:[{from:'Victor',text:'I’m not looking away.'}],
+            v3end2:[{from:'Victor',text:'I deserve that.'}],
+          },
+          effects2:{v3end1:[{flag:'END_VICTOR'}], v3end2:[{flag:'END_VICTOR'}]}
+        }
+      };
+      return {};
+    }
+    case 'CH4': // secret
+      return {
+        secret:{
+          start:{from:'???',text:'You found me. Most don’t.'},
+          choices:[
+            {id:'s4a',text:'Who are you?'},
+            {id:'s4b',text:'I’ve seen your shadow before.'},
+          ],
+          replies:{
+            s4a:[{from:'???',text:'A promise you forgot.'}],
+            s4b:[{from:'???',text:'Then follow it.'}],
+          },
+          effects:{s4a:[{rel:{secret:+1}}], s4b:[{rel:{secret:+1}}]},
+          followupChoices:[
+            {id:'sEnd',text:'Step into the light.'},
+          ],
+          followupReplies:{
+            sEnd:[{from:'???',text:'Welcome back.'}],
+          },
+          effects2:{sEnd:[{flag:'END_SECRET'}]}
+        }
+      };
   }
+  return {};
+}
+
+/* CG registry */
+const CGS={
+  CG_RIVEN_01:{title:'Moonlit Bridge',caption:'Riven opens up a little.',condition:()=>ST.chapter!=='CH1' && ST.rel.riven>=2 && (ST.flags.RIVEN_OPENED||ST.flags.RIVEN_VULNERABLE)},
+  CG_NOAH_01:{title:'Café Serenade',caption:'A private song just for you.',condition:()=>ST.rel.noah>=2},
+  CG_VICTOR_01:{title:'Candlelight Hypothesis',caption:'Romance proven.',condition:()=>ST.rel.victor>=2},
+  CG_SECRET_01:{title:'Unmasked',caption:'The promise remembered.',condition:()=>!!ST.flags.END_SECRET},
 };
 
-/* ================== UI BUILDERS ================== */
-const root = document.getElementById('root');
+/* chapter rules */
+const CHAPTERS={
+  CH1:{name:'Chapter 1', visible:()=>['maja','riven']},
+  CH2:{name:'Chapter 2', visible:()=>['riven','noah','victor']},
+  CH3:{name:'Chapter 3', visible:()=>[ST.route||'riven']},
+  CH4:{name:'Secret Chapter', visible:()=>['secret']},
+};
+function tryAdvanceChapter(){
+  // CH1 -> CH2 when RIVEN_OPENED or rel.riven<=-1
+  if(ST.chapter==='CH1' && (ST.flags.RIVEN_OPENED || ST.rel.riven<=-1)){
+    ST.chapter='CH2'; notice(['riven','noah','victor']);
+  }
+  // setting route in CH2
+  if(ST.chapter==='CH2' && ST.route && (ST.flags.ROUTE_RIVEN||ST.flags.ROUTE_NOAH||ST.flags.ROUTE_VICTOR)){
+    ST.chapter='CH3';
+  }
+  // CH3 -> maybe unlock secret after all endings
+  if(ST.chapter==='CH3' && (ST.flags.END_RIVEN || ST.flags.END_NOAH || ST.flags.END_VICTOR)){
+    // stay in CH3 until player resets route or completes others
+  }
+  // Secret unlock
+  if(ST.flags.END_RIVEN && ST.flags.END_NOAH && ST.flags.END_VICTOR && ST.chapter!=='CH4'){
+    ST.chapter='CH4'; ST.route='secret'; notice(['secret']);
+  }
+  save();
+}
+function notice(ids){ ids.forEach(id=>ST.unread[id]=(ST.unread[id]||0)+1); }
+
+/* ================== UI (vanilla) ================== */
+const root=document.getElementById('root');
+const phone=document.createElement('div'); phone.className='phone'; root.appendChild(phone);
+function StatusBar(){ const el=document.createElement('div'); el.className='status'; el.textContent='Heartline';
+  const b=document.createElement('button'); b.className='reset'; b.textContent='⟲ Reset'; b.onclick=hardReset; el.appendChild(b); return el; }
 function mount(node){ phone.replaceChildren(StatusBar(), node); }
-function StatusBar(){
-  const el=document.createElement('div');
-  el.className='status';
-  el.textContent = 'Heartline';
-  const btn=document.createElement('button');
-  btn.className='reset'; btn.textContent='⟲ Reset';
-  btn.onclick=hardReset;
-  el.appendChild(btn);
-  return el;
-}
-function StartScreen(){
-  const s=document.createElement('div'); s.className='screen';
-  const w=document.createElement('div'); w.className='wrap';
-  w.innerHTML=`<div class="title">Heartline</div>
-               <div class="subtitle">Romance • Mystery • Choices</div>
-               <div class="row">
-                 <button class="btn primary" id="startBtn">Start</button>
-                 <button class="btn ghost" id="resetBtn">Reset</button>
-               </div>`;
-  s.appendChild(w);
-  w.querySelector('#startBtn').onclick=()=>mount(NameScreen());
-  w.querySelector('#resetBtn').onclick=hardReset;
-  return s;
-}
-function NameScreen(){
-  const s=document.createElement('div'); s.className='screen';
-  const w=document.createElement('div'); w.className='wrap';
-  w.innerHTML=`<div class="card">
-      <label>Enter your name</label>
-      <input id="nm" placeholder="Your name…" maxlength="16"/>
-      <div class="row" style="margin-top:12px;justify-content:flex-end">
-        <button class="btn primary" id="ok">OK</button>
-      </div>
-    </div>`;
-  s.appendChild(w);
-  setTimeout(()=>w.querySelector('#nm')?.focus(),50);
-  w.querySelector('#ok').onclick=()=>{
-    ST.playerName = (w.querySelector('#nm').value||'Player').trim();
-    save(); mount(HomeScreen());
-  };
-  return s;
-}
-function HomeScreen(){
-  // compute total unread
-  const totalUnread = Object.values(ST.unread).reduce((a,b)=>a+(b||0),0);
-  const s=document.createElement('div'); s.className='screen';
-  const w=document.createElement('div'); w.className='wrap';
-  w.style.justifyContent='flex-start'; w.style.paddingTop='24px';
-  w.innerHTML=`<div style="font-weight:900;margin-bottom:10px">Welcome, ${ST.playerName||'Player'} 💖 — ${CHAPTERS[ST.chapter]?.name||''}</div>
-    <div class="home-inner">
-      <div class="grid">
-        <button class="app" id="appMessages"><div class="app-icon">💬</div><div class="app-name">Messages</div><div class="badge" id="badgeM" style="${totalUnread?'':'display:none'}">${totalUnread||1}</div></button>
-        <button class="app" id="appPhone"><div class="app-icon">📞</div><div class="app-name">Phone</div></button>
-        <button class="app" id="appGallery"><div class="app-icon">🖼️</div><div class="app-name">Gallery</div></button>
-        <button class="app"><div class="app-icon">⏰</div><div class="app-name">Clock</div></button>
-        <button class="app" id="appSettings"><div class="app-icon">⚙️</div><div class="app-name">Settings</div></button>
-        <button class="app"><div class="app-icon">📝</div><div class="app-name">Notes</div></button>
-      </div>
-    </div>`;
-  s.appendChild(w);
-  w.querySelector('#appMessages').onclick=()=>mount(MessagesList());
-  w.querySelector('#appGallery').onclick=()=>mount(GalleryView());
-  w.querySelector('#appSettings').onclick=()=>mount(SettingsView());
-  return s;
-}
-function BackTop(title, onBack){
-  const el=document.createElement('div'); el.className='topbar';
-  el.innerHTML=`<button class="btn-top" id="b">◀︎</button><div style="font-weight:700">${title}</div><div style="width:24px"></div>`;
-  el.querySelector('#b').onclick=onBack;
-  return el;
-}
 
-/* ---------- Messages Module ---------- */
-function visibleContacts(){
-  const conf = CHAPTERS[ST.chapter];
-  const arr = [];
-  for(const c of CONTACTS){
-    const rule = conf?.unlockedContacts?.[c.id];
-    const ok = typeof rule==='function' ? rule() : !!rule || !!ST.unlocked[c.id];
-    if(ok) arr.push(c);
-  }
-  return arr;
+function StartScreen(){ const s=wrapScreen(`<div class="title">Heartline</div>
+  <div class="subtitle">Romance • Mystery • Choices</div>
+  <div class="row"><button class="btn primary" id="s">Start</button><button class="btn ghost" id="r">Reset</button></div>`);
+  s.querySelector('#s').onclick=()=>mount(NameScreen());
+  s.querySelector('#r').onclick=hardReset; return s; }
+function NameScreen(){ const s=wrapScreen(`<div class="card"><label>Enter your name</label>
+  <input id="nm" placeholder="Your name…" maxlength="16"/><div class="row" style="margin-top:12px;justify-content:flex-end">
+  <button class="btn primary" id="ok">OK</button></div></div>`);
+  setTimeout(()=>s.querySelector('#nm')?.focus(),50);
+  s.querySelector('#ok').onclick=()=>{ ST.playerName=(s.querySelector('#nm').value||'Player').trim(); save(); mount(HomeScreen()); };
+  return s; }
+function HomeScreen(){
+  tryAdvanceChapter();
+  const vis=CHAPTERS[ST.chapter].visible();
+  const totalUnread=Object.values(ST.unread).reduce((a,b)=>a+(b||0),0);
+  const s=wrapScreen(`<div style="font-weight:900;margin-bottom:10px">Welcome, ${nm()} 💖 — ${CHAPTERS[ST.chapter].name}</div>
+    <div class="home-inner"><div class="grid">
+      <button class="app" id="msg"><div class="app-icon">💬</div><div class="app-name">Messages</div><div class="badge" id="bm" style="${totalUnread?'':'display:none'}">${totalUnread||1}</div></button>
+      <button class="app" id="gal"><div class="app-icon">🖼️</div><div class="app-name">Gallery</div></button>
+      <button class="app" id="set"><div class="app-icon">⚙️</div><div class="app-name">Settings</div></button>
+    </div></div>`);
+  s.querySelector('#msg').onclick=()=>mount(MessagesList(vis));
+  s.querySelector('#gal').onclick=()=>mount(GalleryView());
+  s.querySelector('#set').onclick=()=>mount(SettingsView());
+  return s;
 }
-function lastPreview(id){
-  const m = ST.chats[id]?.messages||[];
-  if(m.length) return m[m.length-1].text;
-  const s = SCRIPTS[id]?.start?.text;
-  return s || '';
-}
-function MessagesList(){
+function wrapScreen(inner){ const s=document.createElement('div'); s.className='screen'; const w=document.createElement('div'); w.className='wrap'; w.innerHTML=inner; s.appendChild(w); return s; }
+function BackTop(title,cb){ const el=document.createElement('div'); el.className='topbar';
+  el.innerHTML=`<button class="btn-top" id="b">◀︎</button><div style="font-weight:700">${title}</div><div style="width:24px"></div>`;
+  el.querySelector('#b').onclick=cb; return el; }
+
+function MessagesList(visible){
   const s=document.createElement('div'); s.className='screen';
   const box=document.createElement('div'); box.className='messages';
-  box.appendChild(BackTop('Messages', ()=>mount(HomeScreen())));
+  box.appendChild(BackTop('Messages',()=>mount(HomeScreen())));
   const list=document.createElement('div'); list.className='list';
-
-  for(const c of visibleContacts()){
-    const row=document.createElement('button'); row.className='contact'; row.onclick=()=>openChat(c.id);
+  for(const id of visible){
+    const c=C(id); const row=document.createElement('button'); row.className='contact'; row.onclick=()=>openChat(id);
     row.innerHTML=`<div class="initial ${c.color}">${c.initial}</div>
-                   <div><div class="name">${c.name}</div><div class="last">${lastPreview(c.id)}</div></div>`;
-    if(ST.unread[c.id]){ const b=document.createElement('div'); b.className='badge badge-row'; b.textContent=ST.unread[c.id]; row.appendChild(b); }
+      <div><div class="name">${c.name}</div><div class="last">${lastPreview(id)}</div></div>`;
+    if(ST.unread[id]){ const b=document.createElement('div'); b.className='badge badge-row'; b.textContent=ST.unread[id]; row.appendChild(b); }
     list.appendChild(row);
   }
   box.appendChild(list); s.appendChild(box); return s;
 }
-function openChat(id){
-  ensureStart(id);
-  ST.unread[id]=0; save();
-  mount(ChatView(id));
-}
-function ensureStart(id){
-  const ch = ST.chats[id];
-  if(!ch.messages.length && !ch.queue.length){
-    const s = SCRIPTS[id]?.start; if(s) ch.queue.push({from:s.from,text:s.text,me:false});
-    ch.step='started';
-  }
-}
-function ChatView(id){
-  const c = C(id);
-  const s=document.createElement('div'); s.className='screen';
-  const box=document.createElement('div'); box.className='messages';
-  box.appendChild(BackTop(c.name, ()=>mount(MessagesList())));
+function lastPreview(id){ const m=ST.chats[id].messages; if(m.length) return m[m.length-1].text; const sc=scriptsFor()[id]; return sc?.start?.text||''; }
+function ensureStart(id){ const ch=ST.chats[id]; if(!ch.messages.length&&!ch.queue.length){ const sc=scriptsFor()[id]; if(sc?.start) ch.queue.push({...sc.start}); ch.step='started'; } }
+function openChat(id){ ensureStart(id); ST.unread[id]=0; save(); mount(ChatView(id)); }
 
+function ChatView(id){
+  const c=C(id); const s=document.createElement('div'); s.className='screen';
+  const box=document.createElement('div'); box.className='messages';
+  box.appendChild(BackTop(c.name,()=>mount(HomeScreen())));
   const log=document.createElement('div'); log.className='chat';
-  ST.chats[id].messages.forEach(renderMsg);
-  box.appendChild(log);
+  ST.chats[id].messages.forEach(renderMsg); box.appendChild(log);
+
+  const nextBar=document.createElement('div'); nextBar.className='nextbar';
+  const nextBtn=document.createElement('button'); nextBtn.className='choice'; nextBtn.textContent='Next ▶';
+  nextBtn.onclick=()=>{ stepNext(); refresh(); }; nextBar.appendChild(nextBtn);
+
+  const choicesBar=document.createElement('div'); choicesBar.className='choices';
 
   function renderMsg(m){
-    const row=document.createElement('div'); row.className='rowmsg';
-    row.style.justifyContent = m.me?'flex-end':'flex-start';
-    if(!m.me){
-      const av=document.createElement('div'); av.className='initial-sm '+c.color; av.textContent=(m.from||'?')[0]; row.appendChild(av);
-    }
-    const b=document.createElement('div'); b.className='bubble '+(m.me?'from-me':'from-them');
-    b.innerHTML=`<div class="sender">${m.me?'You':m.from}</div><div>${m.text}</div>`;
-    row.appendChild(b);
-    if(m.me){ const me=document.createElement('div'); me.className='initial-sm i-maja'; me.textContent='Y'; row.appendChild(me); }
-    log.appendChild(row);
-    log.scrollTop = log.scrollHeight;
+    const row=document.createElement('div'); row.className='rowmsg'; row.style.justifyContent=m.me?'flex-end':'flex-start';
+    if(!m.me){ const av=document.createElement('div'); av.className='initial-sm '+c.color; av.textContent=(m.from||'?')[0]; row.appendChild(av); }
+    const bub=document.createElement('div'); bub.className='bubble '+(m.me?'from-me':'from-them');
+    bub.innerHTML=`<div class="sender">${m.me?'You':m.from}</div><div>${m.text}</div>`; row.appendChild(bub);
+    log.appendChild(row); log.scrollTop=log.scrollHeight;
   }
-
-  const barNext=document.createElement('div'); barNext.className='nextbar';
-  const btnNext=document.createElement('button'); btnNext.className='choice'; btnNext.textContent='Next ▶';
-  btnNext.onclick=()=>{ stepNext(); refresh(); };
-  barNext.appendChild(btnNext);
-
-  const barChoices=document.createElement('div'); barChoices.className='choices';
-
-  function stepNext(){
-    const ch = ST.chats[id];
-    if(!ch.queue.length) return;
-    const msg = ch.queue.shift();
-    ch.messages.push(msg);
-    if(!ch.queue.length && ch.step==='started'){
-      ch.choices = SCRIPTS[id]?.choices||[];
-      ch.step='await';
-    }
-    save();
-  }
-  function pick(choiceId){
-    const sc = SCRIPTS[id];
-    const ch = ST.chats[id];
-    const pick = (sc.choices||[]).find(x=>x.id===choiceId);
-    ch.messages.push({from:'You',text:pick.text,me:true});
-    ch.choices=[];
-    // enqueue replies
+  function stepNext(){ const ch=ST.chats[id]; if(!ch.queue.length) return; const msg=ch.queue.shift(); ch.messages.push(msg);
+    if(!ch.queue.length && ch.step==='started'){ ch.choices=(scriptsFor()[id]?.choices)||[]; ch.step='await'; } save(); }
+  function choose(choiceId){
+    const sc=scriptsFor()[id]; const ch=ST.chats[id];
+    const pick=(sc.choices||[]).find(x=>x.id===choiceId);
+    ch.messages.push({from:'You',text:pick.text,me:true}); ch.choices=[];
     (sc.replies?.[choiceId]||[]).forEach(m=>ch.queue.push(m));
-    // apply effects
     applyEffects(sc.effects?.[choiceId]||[]);
-    // special follow-up for Riven
-    if(id==='riven'){ ch.step='after1'; }
-    save(); refresh();
+    // For CH3 routes, follow-up path + endings:
+    ch.step='after1'; save(); refresh();
   }
-  function rivenFollowList(){
-    const sc=SCRIPTS.riven;
-    barChoices.replaceChildren();
-    for(const opt of sc.followupChoices){
+  function followChoices(){
+    const sc=scriptsFor()[id];
+    const arr=sc.followupChoices||[];
+    choicesBar.replaceChildren();
+    arr.forEach(opt=>{
       const b=document.createElement('button'); b.className='choice'; b.textContent=opt.text;
-      b.onclick=()=>rivenFollowPick(opt.id, opt.text);
-      barChoices.appendChild(b);
-    }
-  }
-  function rivenFollowPick(optId, myText){
-    const ch = ST.chats.riven;
-    ch.messages.push({from:'You',text:myText,me:true});
-    (SCRIPTS.riven.followupReplies[optId]||[]).forEach(m=>ch.queue.push(m));
-    applyEffects(SCRIPTS.riven.effects?.[optId]||[]);
-    save(); refresh();
+      b.onclick=()=>{ const ch=ST.chats[id]; ch.messages.push({from:'You',text:opt.text,me:true});
+        (sc.followupReplies?.[opt.id]||[]).forEach(m=>ch.queue.push(m));
+        applyEffects((sc.effects2||{})[opt.id]||[]);
+        save(); refresh(); };
+      choicesBar.appendChild(b);
+    });
   }
   function refresh(){
-    // re-render log quickly (simple approach)
-    log.replaceChildren();
-    ST.chats[id].messages.forEach(renderMsg);
-
-    // decide bottom bar
-    const ch = ST.chats[id];
-    // after Riven first wave, show follow-up choices
-    if(id==='riven' && ch.queue.length===0 && ch.choices.length===0 && ch.messages.length>0 && ch.step==='after1'){
-      rivenFollowList();
-      box.replaceChildren(BackTop(c.name, ()=>mount(MessagesList())), log, barChoices);
-      return;
+    log.replaceChildren(); ST.chats[id].messages.forEach(renderMsg);
+    const ch=ST.chats[id]; const sc=scriptsFor()[id]||{};
+    if(ch.queue.length>0){ box.replaceChildren(BackTop(c.name,()=>mount(HomeScreen())),log,nextBar); return; }
+    if(id in {riven:1,noah:1,victor:1,secret:1} && ch.step==='after1' && (sc.followupChoices||[]).length){
+      followChoices(); box.replaceChildren(BackTop(c.name,()=>mount(HomeScreen())),log,choicesBar); return;
     }
-    if(ch.queue.length>0){
-      box.replaceChildren(BackTop(c.name, ()=>mount(MessagesList())), log, barNext);
+    if(ch.step==='await' && (!ch.choices||!ch.choices.length)){ ch.choices=sc.choices||[]; }
+    choicesBar.replaceChildren();
+    if(ch.choices && ch.choices.length){
+      ch.choices.forEach(opt=>{ const b=document.createElement('button'); b.className='choice'; b.textContent=opt.text; b.onclick=()=>choose(opt.id); choicesBar.appendChild(b);});
     }else{
-      // if no queue and no choices, try to open choices (first time) or end-of-thread
-      if(ch.step==='await' && (!ch.choices || !ch.choices.length)){
-        ch.choices = SCRIPTS[id]?.choices||[];
-      }
-      barChoices.replaceChildren();
-      if(ch.choices && ch.choices.length){
-        for(const opt of ch.choices){
-          const b=document.createElement('button'); b.className='choice'; b.textContent=opt.text;
-          b.onclick=()=>pick(opt.id);
-          barChoices.appendChild(b);
-        }
-      }else{
-        // nothing to do -> end? check chapter end
-        maybeEndChapter();
-        const info=document.createElement('div'); info.style.cssText='font-size:12px;color:#6b7280';
-        info.textContent='No choices — wait for new message';
-        barChoices.appendChild(info);
-      }
-      box.replaceChildren(BackTop(c.name, ()=>mount(MessagesList())), log, barChoices);
+      maybeUnlockCG(); tryAdvanceChapter();
+      const info=document.createElement('div'); info.style.cssText='font-size:12px;color:#6b7280'; info.textContent='No choices — wait for new message';
+      choicesBar.appendChild(info);
     }
+    box.replaceChildren(BackTop(c.name,()=>mount(HomeScreen())),log,choicesBar);
   }
-
-  refresh();
-  return s;
+  refresh(); return s;
 }
 
-/* ---------- Effects, CG unlocks, chapter end ---------- */
-function applyEffects(effects){
-  for(const eff of effects){
-    if(eff.flag) ST.flags[eff.flag]=true;
-    if(eff.unlock){
-      ST.unlocked[eff.unlock]=true;
-      ST.unread[eff.unlock]=(ST.unread[eff.unlock]||0)+1;
-    }
-    if(eff.rel){
-      for(const k in eff.rel){ ST.rel[k]=(ST.rel[k]||0)+eff.rel[k]; }
-    }
+/* effects / CG / chapter transitions */
+function applyEffects(effects=[]){
+  for(const e of effects){
+    if(e.flag) ST.flags[e.flag]=true;
+    if(e.setRoute){ ST.route=e.setRoute; }
+    if(e.rel) for(const k in e.rel){ ST.rel[k]=(ST.rel[k]||0)+e.rel[k]; }
+    if(e.unlock){ ST.unread[e.unlock]=(ST.unread[e.unlock]||0)+1; }
   }
-  // evaluate CG conditions after any effect
-  for(const id in CGS){
-    if(!ST.cg[id] && CGS[id].condition()){
-      ST.cg[id]=true;
-      ST.unread.gallery = (ST.unread.gallery||0)+1; // badge for gallery
-    }
-  }
-  save();
+  maybeUnlockCG(); tryAdvanceChapter(); save();
 }
-function maybeEndChapter(){
-  const ch = CHAPTERS[ST.chapter];
-  if(ch?.endCondition && ch.endCondition()){
-    ch.onEnd && ch.onEnd();
-    save();
-  }
+function maybeUnlockCG(){
+  for(const id in CGS){ if(!ST.cg[id] && CGS[id].condition()){ ST.cg[id]=true; ST.unread.gallery=(ST.unread.gallery||0)+1; } }
 }
 
-/* ---------- Gallery ---------- */
+/* Gallery / Settings / Debug */
 function GalleryView(){
   const s=document.createElement('div'); s.className='screen';
-  const top=BackTop('Gallery', ()=>mount(HomeScreen()));
+  const top=BackTop('Gallery',()=>mount(HomeScreen()));
   const grid=document.createElement('div'); grid.className='gallery';
-
   for(const id in CGS){
-    const unlocked = !!ST.cg[id];
-    const card=document.createElement('div'); card.className='cg'+(unlocked?'':' locked');
-    card.innerHTML = `<div class="ttl">${CGS[id].title}</div>
-      <div class="cap">${unlocked?CGS[id].caption:'Locked — meet the conditions.'}</div>`;
+    const ok=!!ST.cg[id]; const card=document.createElement('div'); card.className='cg'+(ok?'':' locked');
+    card.innerHTML=`<div class="ttl">${CGS[id].title}</div><div class="cap">${ok?CGS[id].caption:'Locked — meet the conditions.'}</div>`;
     grid.appendChild(card);
   }
-
   s.appendChild(top); s.appendChild(grid); return s;
 }
-
-/* ---------- Settings + Debug / Flowchart ---------- */
 function SettingsView(){
-  const s=document.createElement('div'); s.className='screen';
-  const w=document.createElement('div'); w.className='wrap';
-  const relTxt = `Riven ${ST.rel.riven>=0?'+':''}${ST.rel.riven} | Noah ${ST.rel.noah>=0?'+':''}${ST.rel.noah} | Victor ${ST.rel.victor>=0?'+':''}${ST.rel.victor}`;
-  const flagsTxt = Object.keys(ST.flags).sort().join(', ')||'—';
-  const cgTxt = Object.keys(ST.cg).sort().join(', ')||'—';
+  const s=document.createElement('div'); s.className='screen'; const w=document.createElement('div'); w.className='wrap';
+  const rel=`Riven ${fmt(ST.rel.riven)} | Noah ${fmt(ST.rel.noah)} | Victor ${fmt(ST.rel.victor)}`;
+  const flags=Object.keys(ST.flags).sort().join(', ')||'—';
+  const cg=Object.keys(ST.cg).sort().join(', ')||'—';
   w.innerHTML=`<div class="title">Settings</div>
-               <div class="subtitle" style="max-width:300px;text-align:center">
-                 Player: <b>${ST.playerName||'Player'}</b><br/>
-                 Chapter: <b>${ST.chapter}</b><br/>
-                 Relations: <b>${relTxt}</b><br/>
-                 Flags: <b>${flagsTxt}</b><br/>
-                 CG: <b>${cgTxt}</b>
-               </div>
-               <div class="row">
-                 <button class="btn primary" id="dbg">Flowchart / Debug</button>
-                 <button class="btn ghost" id="home">Back</button>
-               </div>`;
-  s.appendChild(w);
-  w.querySelector('#home').onclick=()=>mount(HomeScreen());
-  w.querySelector('#dbg').onclick=()=>mount(FlowchartView());
+    <div class="subtitle" style="max-width:300px;text-align:center">
+      Player: <b>${nm()}</b><br/>Chapter: <b>${ST.chapter}</b> Route: <b>${ST.route||'—'}</b><br/>
+      Relations: <b>${rel}</b><br/>Flags: <b>${flags}</b><br/>CG: <b>${cg}</b>
+    </div>
+    <div class="row"><button class="btn primary" id="flow">Flowchart / Debug</button>
+      <button class="btn ghost" id="home">Back</button></div>`;
+  s.appendChild(w); w.querySelector('#home').onclick=()=>mount(HomeScreen());
+  w.querySelector('#flow').onclick=()=>mount(FlowchartView());
   return s;
 }
+function fmt(n){ return (n>=0?'+':'')+n; }
 function FlowchartView(){
   const s=document.createElement('div'); s.className='screen';
-  const top=BackTop('Flowchart / Debug', ()=>mount(SettingsView()));
-  const wrap=document.createElement('div'); wrap.className='wrap'; wrap.style.alignItems='stretch';
-  wrap.style.justifyContent='flex-start'; wrap.style.paddingTop='10px';
-
+  const top=BackTop('Flowchart / Debug',()=>mount(SettingsView()));
+  const wrap=document.createElement('div'); wrap.className='wrap'; wrap.style.alignItems='stretch'; wrap.style.justifyContent='flex-start'; wrap.style.paddingTop='10px';
   const pre=document.createElement('pre'); pre.style.cssText='background:rgba(255,255,255,.9);padding:12px;border-radius:12px;max-width:320px;white-space:pre-wrap';
-  pre.textContent = renderFlowchart();
-  wrap.appendChild(pre);
-  s.appendChild(top); s.appendChild(wrap); return s;
+  pre.textContent=renderFlow(); wrap.appendChild(pre); s.appendChild(top); s.appendChild(wrap); return s;
 }
-function renderFlowchart(){
-  function block(id){
-    const sc=SCRIPTS[id]; if(!sc) return '';
-    let out = `【${id.toUpperCase()}】\n`;
-    out += `start: ${sc.start?.from}: "${sc.start?.text}"\nchoices:\n`;
-    for(const ch of sc.choices||[]){ out += `  - ${ch.id}: "${ch.text}"\n`; }
-    out += `replies:\n`;
-    for(const k in sc.replies){
-      out += `  ${k}:\n`;
-      for(const r of sc.replies[k]) out += `    • ${r.from}: "${r.text}"\n`;
-    }
-    if(sc.followupChoices){
-      out += `follow-up choices:\n`;
-      for(const ch of sc.followupChoices) out += `  - ${ch.id}: "${ch.text}"\n`;
-    }
-    if(sc.effects){
-      out += `effects:\n`;
-      for(const key in sc.effects){
-        const arr=sc.effects[key];
-        out += `  ${key}: ${JSON.stringify(arr)}\n`;
-      }
-    }
-    return out+'\n';
-  }
-  let txt = `Heartline — Script Overview (Chapter ${ST.chapter})\n\n`;
-  txt += block('maja');
-  txt += block('riven');
-  txt += `CG conditions:\n`;
-  for(const id in CGS){
-    txt += `  ${id}: ${CGS[id].title} — unlocks when condition() returns true.\n`;
-  }
-  return txt;
+function renderFlow(){
+  const sc=scriptsFor();
+  const blocks=Object.keys(sc).map(id=>{
+    const S=sc[id], ch=S.choices||[], r=S.replies||{};
+    let t=`【${id.toUpperCase()} — ${CHAPTERS[ST.chapter].name}${ST.route?(' / '+ST.route):''}】\nstart: ${S.start?.from}: "${S.start?.text}"\nchoices:\n`;
+    ch.forEach(c=>t+=`  - ${c.id}: "${c.text}"\n`);
+    t+='replies:\n'; for(const k in r){ t+=`  ${k}:\n`; r[k].forEach(x=>t+=`    • ${x.from}: "${x.text}"\n`); }
+    if(S.followupChoices){ t+='follow-up:\n'; S.followupChoices.forEach(c=>t+=`  - ${c.id}: "${c.text}"\n`); }
+    return t+'\n';
+  }).join('');
+  return `Heartline — Script Overview\nPlayer:${nm()}  Chapter:${ST.chapter}  Route:${ST.route||'—'}\n\n${blocks}`;
 }
 
-/* ================== BOOT ================== */
-const phone=document.createElement('div'); phone.className='phone'; root.appendChild(phone);
-function startApp(){
-  load();
-  if(!ST.playerName) mount(StartScreen());
-  else mount(HomeScreen());
-}
-startApp();
+/* boot */
+load();
+mount(ST.playerName?HomeScreen():StartScreen());
 </script>
 </body>
 </html>
